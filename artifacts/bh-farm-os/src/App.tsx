@@ -5,10 +5,12 @@ import { Toaster } from '@/components/ui/toaster';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { FarmShell } from '@/components/farm-shell';
 import { AlertsPage, DashboardPage, FarmMapPage, FinancePage, GoatsPage, InventoryPage, LivestockPage, PoultryPage, SearchPage, TasksPage, TodayPage } from '@/pages/farm-pages';
+import { setBaseUrl } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } });
+setBaseUrl(import.meta.env.VITE_API_URL || null);
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
