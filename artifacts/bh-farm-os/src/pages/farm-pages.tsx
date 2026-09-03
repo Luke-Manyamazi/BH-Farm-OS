@@ -80,7 +80,73 @@ export function FarmMapPage() {
   const [selected, setSelected] = useState<FarmZone | null>(null);
   if (isLoading) return <Loading rows={5} />; if (isError) return <ErrorState onRetry={() => refetch()} />;
   const zones = data || [];
-  return <div className="animate-rise"><PageHeading eyebrow="Production plan" title="Farm map" detail="A simple view of the ground, by zone." /><div className="grid gap-5 lg:grid-cols-[1.6fr_1fr]"><Panel className="paper-grid min-h-[520px] overflow-hidden p-4 sm:p-6"><div className="relative h-[480px] rounded-2xl border-2 border-dashed border-[hsl(var(--primary)/.32)] bg-[hsl(var(--secondary)/.25)]"><div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-widest text-[hsl(var(--primary))]">Boroma Hills · north is up</div>{zones.map((z, i) => <button data-testid={`button-zone-${z.id}`} key={z.id} onClick={() => setSelected(z)} className="absolute rounded-2xl border-2 p-3 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md" style={{ left: `${12 + (i * 23) % 65}%`, top: `${18 + (i * 29) % 62}%`, width: `${120 + (i % 2) * 34}px`, borderColor: z.accent || '#35725c', backgroundColor: `${z.accent || '#35725c'}18` }}><div className="mb-2 flex items-center justify-between"><Sprout size={17} style={{ color: z.accent || '#35725c' }} /><MoreHorizontal size={15} /></div><div className="text-[12px] font-bold">{z.name}</div><div className="mt-1 text-[10px] capitalize text-[hsl(var(--muted-foreground))]">{z.type} · {z.status}</div></button>)}</div></Panel><Panel><PanelTitle eyebrow={`${zones.length} configured zones`} title="Zone register" /><div className="space-y-1 p-3">{zones.map(z => <button data-testid={`button-zone-register-${z.id}`} key={z.id} onClick={() => setSelected(z)} className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-[hsl(var(--secondary)/.5)]"><span className="h-3 w-3 rounded-full" style={{ backgroundColor: z.accent || '#35725c' }} /><div className="min-w-0 flex-1"><div className="text-[12px] font-semibold">{z.name}</div><div className="text-[10px] capitalize text-[hsl(var(--muted-foreground))]">{z.type} · {z.dimensions || 'Size not set'}</div></div><Badge tone={toneFor(z.status) as 'green' | 'gold' | 'red'}>{z.status}</Badge></button>)}</div></Panel></div>{selected && <Modal title={selected.name} onClose={() => setSelected(null)}><div className="space-y-4"><div className="grid grid-cols-2 gap-3"><Stat label="Type" value={selected.type} /><Stat label="Status" value={selected.status} /></div><div className="rounded-xl bg-[hsl(var(--secondary)/.55)] p-4 text-sm"><span className="font-semibold">Dimensions</span><div className="mt-1 text-[hsl(var(--muted-foreground))]">{selected.dimensions || 'No dimensions recorded yet.'}</div></div><Button className="w-full" onClick={() => setSelected(null)}>Done</Button></div></Modal>}</div>;
+  const palette: Record<string, string> = {
+    clay: '#b9684d',
+    amber: '#c98b25',
+    sun: '#e1ae38',
+    rose: '#be756d',
+    sage: '#5e956f',
+    blue: '#4b91a5',
+    green: '#4d8b58',
+    slate: '#65727b',
+    orange: '#c4773c',
+    cyan: '#3d9aa3',
+    earth: '#8a6b4d',
+  };
+  const mapLayout: Record<string, { left: number; top: number; width: number; height: number; compact?: boolean }> = {
+    Farmhouse: { left: 2, top: 3, width: 96, height: 17 },
+    "Field crops": { left: 2, top: 40, width: 48, height: 57 },
+    "Goat paddock 1": { left: 53, top: 38, width: 18, height: 25 },
+    "Goat paddock 2": { left: 53, top: 69, width: 18, height: 25 },
+    "Free-range chickens": { left: 75, top: 38, width: 10, height: 10, compact: true },
+    "Broiler area": { left: 87, top: 38, width: 10, height: 10, compact: true },
+    Piggery: { left: 75, top: 50, width: 10, height: 10, compact: true },
+    "Fish tank 1": { left: 87, top: 50, width: 10, height: 10, compact: true },
+    "Fish tank 2": { left: 75, top: 62, width: 10, height: 10, compact: true },
+    "Future greenhouse": { left: 87, top: 62, width: 10, height: 10, compact: true },
+    "Home garden": { left: 75, top: 74, width: 10, height: 10, compact: true },
+    "Commercial vegetable garden": { left: 87, top: 74, width: 10, height: 10, compact: true },
+    Orchard: { left: 75, top: 86, width: 10, height: 10, compact: true },
+    "5,000L JoJo tank": { left: 87, top: 86, width: 10, height: 10, compact: true },
+    "Compost & manure": { left: 75, top: 94, width: 10, height: 4, compact: true },
+    "Equipment storage": { left: 87, top: 94, width: 10, height: 4, compact: true },
+  };
+  const zoneColor = (zone: FarmZone) => palette[zone.accent || ''] || '#35725c';
+  const getZone = (name: string) => zones.find(zone => zone.name === name);
+  const mapZones = zones.filter(zone => mapLayout[zone.name]);
+  return <div className="animate-rise">
+    <PageHeading eyebrow="Production plan · measured site" title="Farm map" detail="A north-up plan of the 100m × 200m holding. Tap any area to see its record." />
+    <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-semibold uppercase tracking-[.12em] text-[hsl(var(--muted-foreground))]">
+      <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#5e956f]" /> Livestock</span>
+      <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#c98b25]" /> Poultry & projects</span>
+      <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#4d8b58]" /> Fields & gardens</span>
+      <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#4b91a5]" /> Water</span>
+    </div>
+    <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr]">
+      <Panel className="paper-grid overflow-hidden p-3 sm:p-5">
+        <div className="relative mx-auto aspect-[1/1.55] max-h-[760px] min-h-[650px] w-full max-w-[620px] overflow-hidden rounded-2xl border-2 border-dashed border-[hsl(var(--primary)/.35)] bg-[hsl(var(--secondary)/.28)]">
+          <div className="absolute inset-x-3 top-2 flex items-start justify-between font-mono text-[9px] uppercase tracking-[.14em] text-[hsl(var(--primary))] sm:inset-x-5 sm:top-3">
+            <span>Boroma Hills · 100m × 200m</span>
+            <span className="flex items-center gap-1.5"><span className="text-sm">↑</span> North</span>
+          </div>
+          <div className="absolute left-[2%] top-[21%] h-px w-[96%] bg-[hsl(var(--primary)/.22)]" />
+          <div className="absolute left-[2%] top-[35%] flex items-center gap-1 font-mono text-[8px] uppercase tracking-[.12em] text-[hsl(var(--muted-foreground))]"><span className="h-px w-4 bg-[hsl(var(--muted-foreground)/.45)]" /> service / project belt</div>
+          <div className="absolute left-[53%] top-[65%] flex h-[4%] w-[18%] items-center justify-center border-y border-dashed border-[#9a774d]/70 bg-[#b99563]/20 font-mono text-[8px] uppercase tracking-[.14em] text-[#765c3b] [writing-mode:vertical-rl] sm:[writing-mode:horizontal-tb]">service road</div>
+          <div className="absolute bottom-[1.5%] left-[2%] font-mono text-[8px] uppercase tracking-[.12em] text-[hsl(var(--muted-foreground))]">South · remaining fields area</div>
+          {mapZones.map(zone => {
+            const layout = mapLayout[zone.name];
+            const color = zoneColor(zone);
+            return <button data-testid={`button-zone-${zone.id}`} key={zone.id} onClick={() => setSelected(zone)} className={`absolute overflow-hidden rounded-xl border-2 p-2 text-left shadow-[var(--shadow-sm)] transition hover:z-20 hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] ${layout.compact ? 'rounded-lg' : 'rounded-2xl p-3'}`} style={{ left: `${layout.left}%`, top: `${layout.top}%`, width: `${layout.width}%`, height: `${layout.height}%`, borderColor: color, backgroundColor: `${color}20` }}>
+              {layout.compact ? <><div className="truncate text-[9px] font-bold leading-tight sm:text-[10px]">{zone.name.replace('Free-range chickens', 'Free-range').replace('Commercial vegetable garden', 'Veg garden').replace('Future greenhouse', 'Greenhouse').replace('5,000L JoJo tank', 'JoJo tank')}</div><div className="mt-1 truncate font-mono text-[7px] text-[hsl(var(--muted-foreground))]">{zone.dimensions || zone.type}</div></> : <><div className="mb-2 flex items-center justify-between"><Sprout size={layout.width > 30 ? 17 : 14} style={{ color }} /><MoreHorizontal size={15} /></div><div className="text-[11px] font-bold sm:text-[12px]">{zone.name}</div><div className="mt-1 text-[9px] text-[hsl(var(--muted-foreground))]">{zone.dimensions || zone.type}</div></>}
+            </button>;
+          })}
+          {getZone('Goat paddock 1') && <div className="pointer-events-none absolute left-[53%] top-[36%] font-mono text-[8px] uppercase tracking-[.1em] text-[hsl(var(--primary))]">Goat block · east</div>}
+        </div>
+      </Panel>
+      <Panel><PanelTitle eyebrow={`${zones.length} configured zones`} title="Zone register" /><div className="space-y-1 p-3">{zones.map(z => <button data-testid={`button-zone-register-${z.id}`} key={z.id} onClick={() => setSelected(z)} className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-[hsl(var(--secondary)/.5)]"><span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: zoneColor(z) }} /><div className="min-w-0 flex-1"><div className="text-[12px] font-semibold">{z.name}</div><div className="text-[10px] capitalize text-[hsl(var(--muted-foreground))]">{z.type} · {z.dimensions || 'Size not set'}</div></div><Badge tone={toneFor(z.status) as 'green' | 'gold' | 'red'}>{z.status}</Badge></button>)}</div></Panel>
+    </div>
+    {selected && <Modal title={selected.name} onClose={() => setSelected(null)}><div className="space-y-4"><div className="grid grid-cols-2 gap-3"><Stat label="Type" value={selected.type} /><Stat label="Status" value={selected.status} /></div><div className="rounded-xl bg-[hsl(var(--secondary)/.55)] p-4 text-sm"><span className="font-semibold">Dimensions</span><div className="mt-1 text-[hsl(var(--muted-foreground))]">{selected.dimensions || 'No dimensions recorded yet.'}</div></div><Button className="w-full" onClick={() => setSelected(null)}>Done</Button></div></Modal>}
+  </div>;
 }
 
 export function LivestockPage() {

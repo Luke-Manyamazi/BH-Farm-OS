@@ -19,15 +19,15 @@ export async function seedFarmData(): Promise<void> {
   if (existing.length > 0) return;
 
   await db.insert(farmZonesTable).values([
-    { name: "Farmhouse", type: "Farmhouse", dimensions: null, status: "Active", accent: "clay" },
+    { name: "Farmhouse", type: "Farmhouse", dimensions: "100 × 40m", status: "Active", accent: "clay" },
     { name: "Free-range chickens", type: "Poultry", dimensions: "10 × 20m", status: "Active", accent: "amber" },
-    { name: "Broiler area", type: "Poultry", dimensions: "9 × 20m", status: "Active", accent: "sun" },
+    { name: "Broiler area", type: "Poultry", dimensions: "10 × 20m", status: "Active", accent: "sun" },
     { name: "Piggery", type: "Livestock", dimensions: "10 × 20m", status: "Active", accent: "rose" },
-    { name: "Goat paddock 1", type: "Livestock", dimensions: null, status: "Active", accent: "sage" },
-    { name: "Goat paddock 2", type: "Livestock", dimensions: null, status: "Active", accent: "sage" },
+    { name: "Goat paddock 1", type: "Livestock", dimensions: "40 × 80m", status: "Active", accent: "sage" },
+    { name: "Goat paddock 2", type: "Livestock", dimensions: "40 × 80m", status: "Active", accent: "sage" },
     { name: "Fish tank 1", type: "Aquaculture", dimensions: "10 × 10m", status: "Active", accent: "blue" },
     { name: "Fish tank 2", type: "Aquaculture", dimensions: "10 × 10m", status: "Active", accent: "blue" },
-    { name: "Field crops", type: "Crops", dimensions: null, status: "Active", accent: "green" },
+    { name: "Field crops", type: "Crops", dimensions: "Remaining south area", status: "Active", accent: "green" },
     { name: "Home garden", type: "Garden", dimensions: null, status: "Active", accent: "green" },
     { name: "Commercial vegetable garden", type: "Garden", dimensions: null, status: "Active", accent: "green" },
     { name: "Future greenhouse", type: "Greenhouse", dimensions: null, status: "Planned", accent: "slate" },
