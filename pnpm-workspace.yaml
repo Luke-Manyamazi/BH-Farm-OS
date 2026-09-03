@@ -68,6 +68,8 @@ onlyBuiltDependencies:
   - esbuild
   - msw
   - unrs-resolver
+
+overrides:
   "esbuild>@esbuild/win32-arm64": "-"
   "esbuild>@esbuild/win32-ia32": "-"
   "esbuild>@esbuild/win32-x64": "-"
