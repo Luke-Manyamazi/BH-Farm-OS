@@ -1,0 +1,1 @@
+- [OpenAPI validator compatibility](openapi-zod-compatibility.md) — use numeric schemas for integer-like fields until generated Zod supports zod.int.

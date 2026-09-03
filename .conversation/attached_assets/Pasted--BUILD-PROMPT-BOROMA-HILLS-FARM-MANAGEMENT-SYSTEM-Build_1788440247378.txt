@@ -1,0 +1,2210 @@
+# BUILD PROMPT — BOROMA HILLS FARM MANAGEMENT SYSTEM
+
+Build a complete, production-ready web application called **Boroma Hills Farm Management System**, also branded as **BH Farm OS**.
+
+This application is for managing a real mixed smallholder farm called **Boroma Hills Farm**, located in Zimbabwe.
+
+The application must be designed as a serious farm management platform rather than a simple CRUD dashboard.
+
+The system must help the farm owner and workers manage:
+
+* Free-range chickens
+* Broilers
+* Goats
+* Pigs
+* Fish
+* Field crops
+* Household vegetable garden
+* Commercial vegetable production
+* Future greenhouse
+* Orchard
+* Water and irrigation
+* Farm infrastructure
+* Feed and agricultural inventory
+* Purchases
+* Sales
+* Expenses
+* Farm tasks
+* Animal health
+* Crop health
+* Production records
+* Farm profitability
+* Reports
+* Future IoT/sensor integration
+* Future AI-assisted farm management
+
+The application must be mobile-first because farm workers will primarily use smartphones while working around the farm.
+
+---
+
+# 1. PRODUCT OBJECTIVE
+
+BH Farm OS should answer these questions at any time:
+
+1. What animals do we currently have?
+2. How many chickens, broilers, pigs, goats and fish do we have?
+3. Which animals are pregnant?
+4. Which animals are sick?
+5. Which vaccinations and treatments are due?
+6. How much feed do we have?
+7. How much feed are we consuming?
+8. How much have we spent?
+9. How much have we sold?
+10. Which farm enterprise is profitable?
+11. Which crops are currently planted?
+12. When were they planted?
+13. What inputs were used?
+14. When should crops be irrigated?
+15. What was harvested?
+16. What was the yield?
+17. How much water is available?
+18. What farm tasks are due today?
+19. What problems need attention?
+20. What is the overall financial position of the farm?
+
+The system must make farm management data-driven.
+
+---
+
+# 2. FARM STRUCTURE
+
+Create the following farm production units.
+
+## UNIT 1 — FREE-RANGE CHICKENS
+
+Current planned area:
+
+**10m × 20m**
+
+Purpose:
+
+* Eggs
+* Meat
+* Breeding
+* Free-range production
+
+Manage chickens primarily as flocks/batches rather than individual birds.
+
+Track:
+
+* Flock ID
+* Breed
+* Purpose
+* Date acquired
+* Starting quantity
+* Current quantity
+* Mortality
+* Birds sold
+* Eggs collected
+* Feed consumption
+* Vaccinations
+* Treatments
+* Health observations
+* Housing area
+* Free-range area
+* Costs
+* Revenue
+* Notes
+* Photos
+
+Calculate:
+
+* Current flock size
+* Mortality rate
+* Egg production
+* Average eggs/day
+* Feed consumption
+* Cost per bird
+* Revenue
+* Profit
+
+---
+
+# 3. UNIT 2 — BROILERS
+
+Planned area:
+
+**9m × 20m**
+
+Broilers must be managed by batch.
+
+Each batch should have:
+
+* Batch ID
+* Breed
+* Date stocked
+* Starting birds
+* Current birds
+* Mortalities
+* Birds sold
+* Feed consumed
+* Average weight
+* Target weight
+* Age in days
+* Vaccinations
+* Treatments
+* Expected sale date
+* Actual sale date
+* Purchase cost
+* Feed cost
+* Medication cost
+* Labour cost
+* Other costs
+* Revenue
+* Profit
+
+Calculate:
+
+* Mortality %
+* Survival %
+* Average weight
+* Total live biomass
+* Feed consumed
+* Feed conversion ratio where sufficient data exists
+* Cost per bird
+* Cost per kg
+* Expected revenue
+* Actual revenue
+* Gross profit
+* Profit per bird
+
+Create alerts for:
+
+* High mortality
+* Low weight gain
+* Vaccinations due
+* Expected harvest date
+* Low feed stock
+
+---
+
+# 4. UNIT 3 — GOATS
+
+The farm currently has:
+
+**7 goats**
+
+including:
+
+**2 pregnant females**
+
+There are:
+
+**2 goat paddocks**
+
+Goats must be managed individually.
+
+Each goat needs:
+
+* Goat ID
+* Name
+* Sex
+* Breed
+* Date of birth
+* Estimated age
+* Acquisition date
+* Acquisition cost
+* Current weight
+* Previous weight
+* Parent/sire/dam where known
+* Paddock
+* Status
+* Pregnancy status
+* Breeding date
+* Expected kidding date
+* Actual kidding date
+* Number of kids
+* Health status
+* Vaccinations
+* Treatments
+* Deworming
+* Feed
+* Weight history
+* Sales history
+* Death history
+* Photos
+* Notes
+
+Statuses:
+
+* Active
+* Pregnant
+* Sick
+* Quarantine
+* Sold
+* Deceased
+
+For pregnant females calculate:
+
+* Days pregnant
+* Estimated kidding date
+* Days remaining
+
+Generate alerts:
+
+* Pregnancy monitoring
+* Expected kidding
+* Vaccination due
+* Deworming due
+* Health check due
+
+When a goat gives birth, allow the user to create one or more new goat records automatically and link them to the mother.
+
+Create goat genealogy.
+
+---
+
+# 5. UNIT 4 — PIGGERY
+
+Planned area:
+
+**10m × 20m**
+
+Support both:
+
+### Breeding pigs
+
+Individual records.
+
+### Growing/fattening pigs
+
+Batch records where appropriate.
+
+Individual pig fields:
+
+* Pig ID
+* Name
+* Sex
+* Breed
+* Birth date
+* Age
+* Weight
+* Parentage
+* Acquisition date
+* Acquisition cost
+* Pen
+* Breeding status
+* Pregnancy status
+* Breeding date
+* Expected farrowing date
+* Actual farrowing date
+* Litter size
+* Weaned piglets
+* Health
+* Vaccinations
+* Treatments
+* Feed
+* Sales
+* Photos
+* Notes
+
+Calculate:
+
+* Growth rate
+* Feed cost
+* Cost per kg
+* Estimated sale value
+* Profit
+
+---
+
+# 6. UNIT 5 — FISH
+
+There are:
+
+**2 fish tanks**
+
+Each tank is:
+
+**10m × 10m**
+
+Create separate tank records.
+
+Tank fields:
+
+* Tank ID
+* Tank name
+* Length
+* Width
+* Depth
+* Volume
+* Fish species
+* Stocking date
+* Number stocked
+* Estimated current number
+* Average weight
+* Estimated biomass
+* Feed
+* Mortality
+* Water changes
+* Harvest
+* Revenue
+* Costs
+* Notes
+
+Water-quality monitoring must support:
+
+* Temperature
+* pH
+* Dissolved oxygen
+* Ammonia
+* Water level
+* Water clarity
+* Notes
+
+Allow manual entry initially.
+
+Design the architecture so sensors can be connected in the future.
+
+Calculate:
+
+* Stocking density
+* Estimated biomass
+* Feed usage
+* Mortality
+* Growth
+* Harvest quantity
+* Production cost
+* Revenue
+* Profit
+
+---
+
+# 7. FIELD CROP MANAGEMENT
+
+The farm has field areas for different crops.
+
+Create a flexible field management system.
+
+Each field/plot must have:
+
+* Field ID
+* Name
+* Area
+* Unit
+* GPS/location if available
+* Soil type
+* Soil notes
+* Irrigation availability
+* Current crop
+* Previous crop
+* Status
+* Notes
+* Photos
+
+Create crop cycles.
+
+A crop cycle contains:
+
+* Crop
+* Variety
+* Field
+* Planting date
+* Expected harvest date
+* Actual harvest date
+* Seed quantity
+* Seed cost
+* Fertilizer/manure
+* Fertilizer cost
+* Labour
+* Irrigation
+* Pest control
+* Disease control
+* Other inputs
+* Harvest quantity
+* Harvest unit
+* Quality
+* Sales
+* Revenue
+* Total cost
+* Gross profit
+
+Track crop activities:
+
+* Land preparation
+* Planting
+* Fertilization
+* Irrigation
+* Weeding
+* Pest control
+* Disease control
+* Scouting
+* Harvesting
+
+---
+
+# 8. HOME VEGETABLE GARDEN
+
+Create a separate production area called:
+
+**Home Garden**
+
+This belongs to the household and is primarily for food production.
+
+Support crops such as:
+
+* Tomatoes
+* Onions
+* Covo
+* Rape
+* Spinach
+* Beans
+* Carrots
+* Beetroot
+* Peppers
+* Herbs
+* Other vegetables
+
+The system must distinguish:
+
+**HOME CONSUMPTION**
+
+from:
+
+**COMMERCIAL PRODUCTION**
+
+Track:
+
+* Crop
+* Planting date
+* Area
+* Quantity planted
+* Harvest
+* Household consumption
+* Quantity sold
+* Quantity remaining
+* Costs
+* Notes
+
+Create a dashboard showing:
+
+**Food produced for household consumption.**
+
+---
+
+# 9. COMMERCIAL VEGETABLE GARDEN
+
+Create a separate area for vegetables intended for sale.
+
+Track:
+
+* Crop
+* Variety
+* Bed
+* Bed dimensions
+* Planting date
+* Quantity planted
+* Input costs
+* Labour
+* Water
+* Harvest
+* Sales
+* Revenue
+* Profit
+
+Allow multiple beds per crop.
+
+---
+
+# 10. GREENHOUSE
+
+The greenhouse is a future project.
+
+Do not assume it already exists.
+
+Create greenhouse functionality that can be marked:
+
+**PLANNED**
+
+or
+
+**ACTIVE**
+
+Allow the farm owner to record:
+
+* Greenhouse name
+* Dimensions
+* Area
+* Crop
+* Variety
+* Planting date
+* Number of plants
+* Irrigation
+* Fertilization
+* Pest control
+* Temperature
+* Humidity
+* Harvest
+* Sales
+* Costs
+* Profit
+
+The system should allow greenhouse projects to be added later without changing the database structure.
+
+---
+
+# 11. ORCHARD
+
+Create a dedicated orchard module.
+
+The farm has a small orchard area.
+
+Allow individual tree records.
+
+Each tree:
+
+* Tree ID
+* Species
+* Variety
+* Planting date
+* Location
+* Age
+* Rootstock if known
+* Irrigation
+* Fertilization
+* Pruning
+* Pest control
+* Disease
+* Flowering
+* Fruit production
+* Harvest
+* Sales
+* Photos
+* Notes
+
+Track yearly orchard performance.
+
+Calculate:
+
+* Trees planted
+* Living trees
+* Dead trees
+* Trees producing
+* Total harvest
+* Yield/tree
+* Revenue
+* Costs
+* Profit
+
+---
+
+# 12. WATER MANAGEMENT
+
+The farm has a water source and currently uses a:
+
+**5,000 litre JoJo tank**
+
+Create a Water Management module.
+
+Track:
+
+* Water sources
+* Storage tanks
+* Tank capacity
+* Current level
+* Water usage
+* Irrigation
+* Livestock usage
+* Fish usage
+* Household usage
+* Water losses
+* Pump usage
+
+Create the 5,000L tank as the initial storage asset.
+
+Dashboard:
+
+**Water tank: 78%**
+
+with:
+
+* Current litres
+* Capacity
+* Percentage full
+* Estimated days remaining where sufficient usage data exists
+
+Allow future integration with:
+
+* Tank level sensors
+* Flow meters
+* Soil moisture sensors
+* Automated irrigation
+
+---
+
+# 13. IRRIGATION
+
+Create an irrigation management system.
+
+Track:
+
+* Field
+* Garden
+* Greenhouse
+* Orchard
+* Irrigation method
+* Irrigation date
+* Start time
+* Duration
+* Estimated litres
+* Water source
+* Operator
+* Notes
+
+Support future methods:
+
+* Hose
+* Drip irrigation
+* Sprinklers
+* Automated irrigation
+
+Create irrigation recommendations based on:
+
+* Crop
+* Soil
+* recent irrigation
+* rainfall
+* soil moisture if available
+
+Do not automatically control pumps unless future IoT integration is enabled.
+
+---
+
+# 14. FARM INVENTORY
+
+Create inventory management.
+
+Inventory categories:
+
+### Feed
+
+* Chicken feed
+* Broiler starter
+* Broiler grower
+* Pig feed
+* Goat feed
+* Fish feed
+
+### Seeds
+
+### Fertilizer
+
+### Organic manure
+
+### Veterinary supplies
+
+### Medication
+
+### Tools
+
+### Equipment
+
+### Irrigation supplies
+
+### Construction materials
+
+Each inventory item:
+
+* Item ID
+* Name
+* Category
+* Unit
+* Quantity
+* Minimum stock
+* Maximum stock
+* Supplier
+* Purchase price
+* Last purchase date
+* Expiry date where applicable
+* Storage location
+* Notes
+
+Inventory transactions:
+
+* Purchase
+* Usage
+* Adjustment
+* Transfer
+* Waste
+* Expired
+* Sale
+
+Create low-stock alerts.
+
+---
+
+# 15. MANURE AND COMPOST MANAGEMENT
+
+Create a resource recycling module.
+
+Track:
+
+* Chicken manure
+* Goat manure
+* Pig manure
+* Compost
+* Crop residues
+* Other organic material
+
+Record:
+
+* Source
+* Quantity
+* Date
+* Storage/compost location
+* Status
+* Intended use
+* Field/garden destination
+
+The system should help track movement of manure from livestock to crop production.
+
+Example:
+
+**Piggery → Compost Area → Vegetable Garden**
+
+This should be represented as a resource transfer.
+
+---
+
+# 16. FARM TASK MANAGEMENT
+
+Create a daily task management system.
+
+Tasks can be:
+
+* Feeding
+* Watering
+* Cleaning
+* Egg collection
+* Animal inspection
+* Vaccination
+* Deworming
+* Irrigation
+* Weeding
+* Planting
+* Harvesting
+* Equipment maintenance
+* Tank inspection
+* Water checks
+
+Each task:
+
+* Task ID
+* Title
+* Description
+* Farm unit
+* Assigned user
+* Priority
+* Due date
+* Due time
+* Recurrence
+* Status
+* Completed date
+* Completed by
+* Notes
+* Photos
+
+Statuses:
+
+* Pending
+* In Progress
+* Completed
+* Overdue
+* Cancelled
+
+Create recurring tasks.
+
+Example:
+
+**Feed broilers every morning and afternoon.**
+
+---
+
+# 17. DAILY FARM CHECKLIST
+
+Create a special **TODAY** page.
+
+When a user opens the application, show:
+
+### TODAY'S TASKS
+
+Example:
+
+☐ Feed free-range chickens
+☐ Feed broilers
+☐ Feed pigs
+☐ Check goats
+☐ Check pregnant goats
+☐ Check fish tanks
+☐ Check water tank
+☐ Irrigate garden
+☐ Inspect crops
+☐ Collect eggs
+☐ Record mortality
+☐ Check inventory
+
+Make completion extremely easy on mobile.
+
+---
+
+# 18. ANIMAL HEALTH
+
+Create a central animal health system.
+
+Support:
+
+* Vaccination
+* Deworming
+* Treatment
+* Injury
+* Illness
+* Vet visit
+* Health inspection
+* Mortality
+
+Every health event must link to:
+
+* Animal or flock
+* Date
+* Type
+* Medication/treatment
+* Dosage where applicable
+* Cost
+* Person who administered it
+* Notes
+* Photos
+* Follow-up date
+
+Create alerts for upcoming treatments.
+
+Do not prescribe veterinary medication automatically.
+
+The system is for record keeping and management, not veterinary diagnosis.
+
+---
+
+# 19. CROP HEALTH
+
+Create crop health records.
+
+Record:
+
+* Field
+* Crop
+* Date
+* Observation
+* Pest
+* Disease
+* Severity
+* Treatment
+* Photos
+* Follow-up date
+
+Allow users to photograph a problem.
+
+Design the system so an AI crop-diagnosis feature can be added later.
+
+---
+
+# 20. FARM FINANCE
+
+Create a complete farm finance module.
+
+Track:
+
+### Income
+
+* Eggs
+* Chickens
+* Broilers
+* Goats
+* Pigs
+* Fish
+* Vegetables
+* Field crops
+* Fruit
+* Other income
+
+### Expenses
+
+* Feed
+* Seed
+* Fertilizer
+* Manure
+* Medication
+* Veterinary
+* Labour
+* Transport
+* Fuel
+* Electricity
+* Water
+* Equipment
+* Construction
+* Repairs
+* Packaging
+* Other
+
+Every transaction should have:
+
+* Date
+* Category
+* Farm unit
+* Description
+* Amount
+* Payment method
+* Supplier/customer
+* Reference
+* Notes
+
+---
+
+# 21. SALES
+
+Create a sales module.
+
+A sale should contain:
+
+* Sale ID
+* Date
+* Product
+* Farm unit
+* Quantity
+* Unit
+* Unit price
+* Total
+* Customer
+* Payment status
+* Payment method
+* Notes
+
+Support:
+
+* Paid
+* Partially paid
+* Credit
+* Cancelled
+
+Calculate revenue automatically.
+
+---
+
+# 22. FARM PROFITABILITY
+
+The dashboard must calculate profitability by enterprise.
+
+Examples:
+
+### Broilers
+
+Revenue
+− feed
+− chicks
+− medication
+− labour
+− utilities
+− other costs
+= Profit
+
+### Goats
+
+Revenue
+− feed
+− veterinary
+− breeding
+− other costs
+= Profit
+
+### Vegetables
+
+Revenue
+− seed
+− fertilizer/manure
+− labour
+− irrigation
+− other costs
+= Profit
+
+Create:
+
+**Profit by Enterprise**
+
+with charts.
+
+Also show:
+
+* Total revenue
+* Total expenses
+* Gross profit
+* Net farm result
+* Monthly revenue
+* Monthly expenses
+* Cash flow
+* Best-performing enterprise
+* Worst-performing enterprise
+
+---
+
+# 23. DASHBOARD
+
+Create a professional farm dashboard.
+
+Top-level cards:
+
+* Total livestock
+* Chickens
+* Broilers
+* Goats
+* Pigs
+* Fish
+* Active crop cycles
+* Orchard trees
+* Water level
+* Low-stock items
+* Tasks due today
+* Overdue tasks
+* Monthly revenue
+* Monthly expenses
+* Monthly profit
+
+Create sections:
+
+### LIVESTOCK
+
+Production and health summary.
+
+### CROPS
+
+Current crops and upcoming harvests.
+
+### WATER
+
+Tank levels and irrigation.
+
+### TASKS
+
+Today's tasks.
+
+### INVENTORY
+
+Low-stock alerts.
+
+### FINANCE
+
+Revenue, expenses and profit.
+
+### ALERTS
+
+Important farm issues.
+
+---
+
+# 24. FARM MAP
+
+Create a visual farm map.
+
+The map should contain production zones:
+
+* Farmhouse
+* Water source
+* 5,000L JoJo tank
+* Free-range chicken area
+* Broiler area
+* Piggery
+* Goat paddock 1
+* Goat paddock 2
+* Fish tank 1
+* Fish tank 2
+* Field crops
+* Home garden
+* Commercial vegetable garden
+* Future greenhouse
+* Orchard
+* Compost/manure area
+* Equipment/storage area
+
+Do not hard-code geographic coordinates.
+
+Allow the farm owner to configure locations later.
+
+Each map zone should be clickable and open its corresponding module.
+
+---
+
+# 25. REPORTS
+
+Create reports for:
+
+### Livestock
+
+* Current animals
+* Births
+* Deaths
+* Sales
+* Health
+* Weight growth
+* Feed usage
+
+### Chickens
+
+* Flock performance
+* Egg production
+* Mortality
+* Feed
+* Revenue
+* Profit
+
+### Broilers
+
+* Batch performance
+* Growth
+* Mortality
+* Feed
+* FCR
+* Cost
+* Revenue
+* Profit
+
+### Goats
+
+* Herd growth
+* Breeding
+* Pregnancies
+* Births
+* Mortality
+* Sales
+* Weight
+
+### Pigs
+
+* Growth
+* Breeding
+* Litters
+* Feed
+* Sales
+* Profit
+
+### Fish
+
+* Stocking
+* Growth
+* Mortality
+* Feed
+* Harvest
+* Revenue
+
+### Crops
+
+* Planting
+* Harvest
+* Yield
+* Input cost
+* Revenue
+* Profit
+
+### Finance
+
+* Income statement
+* Expenses
+* Revenue
+* Cash flow
+* Profitability
+
+Reports should support:
+
+* Current month
+* Previous month
+* Current year
+* Previous year
+* Custom date range
+
+Allow export to CSV/PDF if supported.
+
+---
+
+# 26. NOTIFICATIONS AND ALERTS
+
+Create an alert system.
+
+Alerts include:
+
+### Livestock
+
+* Vaccination due
+* Treatment follow-up
+* Deworming due
+* Pregnancy due
+* Expected birth
+* High mortality
+
+### Crops
+
+* Irrigation due
+* Harvest approaching
+* Pest observation
+* Disease observation
+
+### Inventory
+
+* Feed low
+* Seed low
+* Medication expiry
+* Other stock alerts
+
+### Finance
+
+* Unpaid customer
+* Large expense
+* Budget exceeded
+
+### Water
+
+* Low tank level
+* Excessive water consumption
+
+---
+
+# 27. USERS AND PERMISSIONS
+
+Create role-based access.
+
+Roles:
+
+## ADMIN / OWNER
+
+Full access.
+
+Can:
+
+* Manage farm
+* Manage users
+* Manage finances
+* Manage livestock
+* Manage crops
+* Manage inventory
+* View reports
+* Configure settings
+
+## FARM MANAGER
+
+Can manage:
+
+* Livestock
+* Crops
+* Tasks
+* Inventory
+* Production
+* Reports
+
+But should not manage system administration.
+
+## LIVESTOCK MANAGER
+
+Access:
+
+* Chickens
+* Broilers
+* Goats
+* Pigs
+* Fish
+* Health
+* Feed
+* Tasks
+
+## CROP MANAGER
+
+Access:
+
+* Fields
+* Vegetables
+* Greenhouse
+* Orchard
+* Irrigation
+* Crop health
+* Tasks
+
+## WORKER
+
+Can:
+
+* View assigned tasks
+* Complete tasks
+* Record observations
+* Record production
+* Upload photos
+
+Workers should not access financial information unless explicitly permitted.
+
+---
+
+# 28. MOBILE-FIRST DESIGN
+
+This is extremely important.
+
+The application must work very well on:
+
+* Android phones
+* iPhones
+* Tablets
+* Desktop computers
+
+Prioritize mobile usability.
+
+Use:
+
+* Large buttons
+* Simple forms
+* Dropdowns
+* Checkboxes
+* Quick actions
+* Camera/photo upload
+* Minimal typing
+* Clear icons
+* Responsive tables
+
+Create a mobile bottom navigation:
+
+**Home | Tasks | Farm | Records | More**
+
+---
+
+# 29. QUICK ACTIONS
+
+Add a prominent Quick Actions section.
+
+Buttons:
+
+**+ Record Sale**
+
+**+ Record Expense**
+
+**+ Record Feed**
+
+**+ Record Egg Collection**
+
+**+ Record Mortality**
+
+**+ Record Weight**
+
+**+ Record Harvest**
+
+**+ Complete Task**
+
+**+ Add Animal**
+
+**+ Add Crop Activity**
+
+**+ Add Inventory**
+
+Make these available from the dashboard.
+
+---
+
+# 30. SEARCH
+
+Implement global search.
+
+Search for:
+
+* Goat ID
+* Pig ID
+* Flock
+* Batch
+* Field
+* Crop
+* Tank
+* Sale
+* Expense
+* Inventory
+* Task
+
+Results should show the relevant module and record.
+
+---
+
+# 31. AUDIT LOG
+
+Create an audit trail.
+
+Record:
+
+* User
+* Action
+* Record
+* Date/time
+* Previous value
+* New value
+
+Examples:
+
+"Luke changed Goat G003 pregnancy status from Unknown to Pregnant."
+
+"Worker John recorded 2 broiler deaths."
+
+This is important for farm accountability.
+
+---
+
+# 32. DATA MODEL
+
+Create a normalized relational data structure.
+
+Core entities should include:
+
+* Farm
+* FarmZone
+* User
+* Role
+* Task
+* Animal
+* Goat
+* Pig
+* PoultryFlock
+* BroilerBatch
+* FishTank
+* FishBatch
+* Field
+* Crop
+* CropCycle
+* CropActivity
+* Garden
+* GardenBed
+* Greenhouse
+* Orchard
+* Tree
+* HealthRecord
+* Vaccination
+* Treatment
+* FeedRecord
+* InventoryItem
+* InventoryTransaction
+* WaterSource
+* WaterTank
+* WaterUsage
+* IrrigationRecord
+* CompostBatch
+* ResourceTransfer
+* Sale
+* SaleItem
+* Expense
+* Customer
+* Supplier
+* Harvest
+* WeightRecord
+* MortalityRecord
+* Alert
+* AuditLog
+* FarmSetting
+
+Use relationships between entities rather than duplicating information.
+
+---
+
+# 33. IMPORTANT DATA RULES
+
+Do not hard-code:
+
+* Animal numbers
+* Crop numbers
+* Prices
+* Feed costs
+* Production targets
+* Coordinates
+* Breed names
+* Suppliers
+* Customers
+
+Everything must be configurable.
+
+Initial data should include:
+
+### Farm
+
+Boroma Hills Farm
+
+### Goats
+
+7 goats
+
+2 marked as pregnant females
+
+### Goat paddocks
+
+2
+
+### Free-range chicken area
+
+10 × 20m
+
+### Broiler area
+
+9 × 20m
+
+### Fish tanks
+
+2
+
+Each 10 × 10m
+
+### Piggery
+
+10 × 20m
+
+### Water tank
+
+5,000 litres
+
+### Orchard
+
+Small orchard area
+
+### Greenhouse
+
+Status: Planned
+
+---
+
+# 34. PRODUCTION TARGETS
+
+Create configurable farm targets.
+
+Examples:
+
+* Target eggs/day
+* Target broiler mortality
+* Target broiler sale weight
+* Target goat herd size
+* Target pig sale weight
+* Target fish harvest
+* Target crop yield
+* Target monthly revenue
+* Target monthly profit
+* Target water usage
+
+Never hard-code targets.
+
+The owner should be able to change them.
+
+---
+
+# 35. FARM CALENDAR
+
+Create a calendar.
+
+Show:
+
+* Planting
+* Harvest
+* Vaccinations
+* Pregnancies
+* Expected births
+* Feed purchases
+* Sales
+* Tasks
+* Maintenance
+* Irrigation
+* Animal health events
+
+Allow day/week/month views.
+
+---
+
+# 36. FUTURE AI ARCHITECTURE
+
+Do not implement expensive AI APIs immediately.
+
+However, design the application so an AI module can be added later.
+
+Potential future AI features:
+
+### Farm Assistant
+
+The owner can ask:
+
+"What happened on the farm this week?"
+
+"What are my biggest expenses?"
+
+"Which enterprise is most profitable?"
+
+"How many broilers should I order for the next batch?"
+
+"Which goats are due for treatment?"
+
+"What crops are approaching harvest?"
+
+### Predictive analytics
+
+* Feed forecasting
+* Mortality anomaly detection
+* Production forecasting
+* Revenue forecasting
+* Crop yield prediction
+* Water demand forecasting
+
+### Computer vision
+
+Potential future photo analysis:
+
+* Goat body condition
+* Crop disease
+* Pest identification
+* Chicken health
+* Fruit maturity
+
+AI must never make high-risk veterinary or pesticide decisions without appropriate professional confirmation.
+
+---
+
+# 37. FUTURE IOT ARCHITECTURE
+
+Design for future IoT integration.
+
+Potential devices:
+
+### Water
+
+* Tank level sensor
+* Flow meter
+
+### Crops
+
+* Soil moisture
+* Temperature
+* Humidity
+* Rainfall
+
+### Fish
+
+* Temperature
+* pH
+* Dissolved oxygen
+* Ammonia
+
+### Poultry
+
+* Temperature
+* Humidity
+
+The database should allow future sensor records:
+
+* Sensor ID
+* Sensor type
+* Location
+* Reading
+* Unit
+* Timestamp
+* Status
+
+Do not build hardware integration now unless it is simple and supported.
+
+---
+
+# 38. WEATHER
+
+Create a weather integration layer.
+
+The dashboard should eventually support:
+
+* Current temperature
+* Rainfall
+* Forecast
+* Humidity
+* Wind
+* Weather alerts
+
+Use weather data to assist farm planning.
+
+Do not make irrigation decisions solely from weather forecasts.
+
+---
+
+# 39. BIOSECURITY
+
+Create a farm biosecurity section.
+
+Track:
+
+* Animal quarantine
+* New animal arrival
+* Visitor records
+* Cleaning
+* Disinfection
+* Disease incidents
+* Isolation areas
+* Movement of animals between zones
+
+Provide configurable biosecurity checklists.
+
+---
+
+# 40. EQUIPMENT AND MAINTENANCE
+
+Create equipment management.
+
+Track:
+
+* Pumps
+* Hoses
+* Feeders
+* Drinkers
+* Tools
+* Tractors if acquired
+* Solar equipment
+* Fish equipment
+* Electrical equipment
+* Irrigation equipment
+
+Each asset:
+
+* Asset ID
+* Name
+* Category
+* Purchase date
+* Purchase price
+* Location
+* Condition
+* Maintenance schedule
+* Last maintenance
+* Next maintenance
+* Notes
+* Photos
+
+---
+
+# 41. USER EXPERIENCE
+
+The interface should feel like a modern professional agricultural application.
+
+Design language:
+
+* Clean
+* Professional
+* Modern
+* Agricultural
+* Easy to understand
+* Mobile-first
+* Data-driven
+
+Use cards, tables, charts, icons and status badges.
+
+Avoid an overly complicated enterprise interface.
+
+The farm owner should understand the dashboard immediately.
+
+---
+
+# 42. DASHBOARD PRIORITY
+
+The first screen after login should show:
+
+## BOROMA HILLS FARM
+
+### Today's Overview
+
+**Animals**
+
+🐔 Chickens
+🐓 Broilers
+🐐 Goats
+🐖 Pigs
+🐟 Fish
+
+**Crops**
+
+🌽 Field crops
+🥬 Garden
+🌱 Greenhouse
+🍊 Orchard
+
+**Farm Health**
+
+💧 Water
+📦 Inventory
+⚠ Alerts
+✅ Tasks
+
+**Money**
+
+💰 Revenue
+💸 Expenses
+📈 Profit
+
+---
+
+# 43. SECURITY
+
+Implement proper authentication.
+
+Users must only see information permitted by their role.
+
+Financial information must be protected.
+
+Validate all inputs.
+
+Prevent unauthorized data access.
+
+Use secure authentication and authorization.
+
+Do not expose sensitive configuration values in frontend code.
+
+---
+
+# 44. DATABASE INTEGRITY
+
+Use validation.
+
+Examples:
+
+* Quantities cannot be negative.
+* Expenses cannot have negative amounts.
+* Sale quantity cannot exceed available inventory where inventory tracking applies.
+* Animal death should reduce active animal count.
+* Animal sale should change status to Sold.
+* New births should increase herd count.
+* Inventory usage should reduce inventory.
+* Inventory purchase should increase inventory.
+* Harvest should update available produce.
+* Financial totals should be calculated from transactions rather than manually typed.
+
+---
+
+# 45. AUTOMATIC CALCULATIONS
+
+Implement automatic calculations wherever possible.
+
+Examples:
+
+### Animal
+
+Current age.
+
+### Goat
+
+Pregnancy days.
+
+Expected kidding date.
+
+### Broiler
+
+Age in days.
+
+Survival rate.
+
+Mortality rate.
+
+Average weight.
+
+Feed conversion ratio when enough data exists.
+
+### Crops
+
+Days since planting.
+
+Days until expected harvest.
+
+Yield per area.
+
+Cost per area.
+
+Revenue per area.
+
+Profit per area.
+
+### Finance
+
+Revenue.
+
+Expenses.
+
+Profit.
+
+### Inventory
+
+Current stock.
+
+Low-stock status.
+
+### Water
+
+Litres remaining.
+
+Percentage full.
+
+---
+
+# 46. SAMPLE DASHBOARD ALERTS
+
+Use realistic examples such as:
+
+⚠ **Goat G003 expected to kid in 12 days**
+
+⚠ **Broiler Batch BR-001 vaccination due tomorrow**
+
+⚠ **Broiler feed stock below minimum**
+
+💧 **Water tank currently 42% full**
+
+🌱 **Tomato field expected to harvest in 8 days**
+
+📦 **Fish feed stock is low**
+
+💰 **Farm expenses increased 18% this month**
+
+---
+
+# 47. INITIAL SEED DATA
+
+Create realistic demo records so the application does not appear empty.
+
+Use clearly labelled demo/sample data where appropriate.
+
+Initial records should include:
+
+* 7 goats
+* 2 pregnant female goats
+* 2 goat paddocks
+* 1 free-range chicken unit
+* 1 broiler unit
+* 2 fish tanks
+* 1 piggery
+* several crop fields
+* home garden
+* commercial garden
+* planned greenhouse
+* orchard
+* 5,000L water tank
+* sample inventory
+* sample tasks
+* sample expenses
+* sample sales
+
+Do not invent real farm financial history. Mark financial demo data as sample data.
+
+---
+
+# 48. RESPONSIVE PAGES
+
+Build these pages:
+
+1. Login
+2. Dashboard
+3. Today
+4. Farm Map
+5. Livestock
+6. Goats
+7. Pigs
+8. Chickens
+9. Broilers
+10. Fish
+11. Crops
+12. Fields
+13. Garden
+14. Greenhouse
+15. Orchard
+16. Water
+17. Irrigation
+18. Inventory
+19. Feed
+20. Animal Health
+21. Crop Health
+22. Tasks
+23. Calendar
+24. Sales
+25. Expenses
+26. Finance
+27. Reports
+28. Equipment
+29. Compost/Resources
+30. Alerts
+31. Users
+32. Settings
+33. Audit Log
+
+---
+
+# 49. NAVIGATION
+
+Desktop sidebar:
+
+Dashboard
+Today
+Farm Map
+Livestock
+Crops
+Garden
+Orchard
+Water & Irrigation
+Inventory
+Tasks
+Sales
+Expenses
+Finance
+Reports
+Equipment
+Alerts
+Settings
+
+Mobile:
+
+Home
+Tasks
+Farm
+Records
+More
+
+---
+
+# 50. IMPORTANT PRODUCT PRINCIPLE
+
+Do not build this as a generic agriculture template.
+
+Build it specifically around the operational reality of **Boroma Hills Farm**.
+
+The application should be extensible because the farm will grow.
+
+Today:
+
+7 goats
+
+Tomorrow:
+
+15 goats
+
+Later:
+
+30+ goats.
+
+Today:
+
+small vegetable garden.
+
+Later:
+
+commercial vegetable production and greenhouse.
+
+Today:
+
+manual water management.
+
+Later:
+
+drip irrigation and sensors.
+
+Today:
+
+manual farm records.
+
+Later:
+
+AI-assisted farm intelligence.
+
+The architecture must support this growth without requiring the application to be rebuilt.
+
+---
+
+# 51. DEVELOPMENT APPROACH
+
+Build the application in a stable order:
+
+### STEP 1
+
+Authentication, users and farm setup.
+
+### STEP 2
+
+Farm dashboard and farm zones.
+
+### STEP 3
+
+Livestock management.
+
+### STEP 4
+
+Crop and garden management.
+
+### STEP 5
+
+Water and irrigation.
+
+### STEP 6
+
+Inventory.
+
+### STEP 7
+
+Tasks and calendar.
+
+### STEP 8
+
+Sales and expenses.
+
+### STEP 9
+
+Finance and profitability.
+
+### STEP 10
+
+Reports.
+
+### STEP 11
+
+Alerts and notifications.
+
+### STEP 12
+
+Audit logging.
+
+### STEP 13
+
+Prepare architecture for AI and IoT.
+
+Do not sacrifice core data integrity for visual features.
+
+---
+
+# 52. FINAL QUALITY REQUIREMENTS
+
+Before considering the application complete, verify:
+
+* Authentication works.
+* Role permissions work.
+* Mobile layout works.
+* Desktop layout works.
+* CRUD operations work.
+* Database relationships work.
+* Dashboard calculations are correct.
+* Financial calculations are correct.
+* Inventory calculations are correct.
+* Animal counts update correctly.
+* Births increase livestock counts.
+* Deaths decrease active counts.
+* Sales update livestock/product status.
+* Inventory purchases increase stock.
+* Inventory usage decreases stock.
+* Tasks can be completed.
+* Recurring tasks work.
+* Alerts work.
+* Search works.
+* Reports work.
+* Empty states are handled.
+* Forms have validation.
+* Errors are user-friendly.
+* No fake data is presented as real farm data.
+* No sensitive information is exposed.
+* The system remains usable on a mobile phone.
+
+---
+
+# 53. MOST IMPORTANT REQUIREMENT
+
+Build a **working application**, not just a visual prototype.
+
+All major buttons, forms, database operations, calculations, relationships, filters and dashboards must actually work.
+
+Where Base44 cannot implement a requested advanced feature natively, create the correct data structure and UI foundation for it rather than pretending that the feature is functional.
+
+Prioritize:
+
+**DATA INTEGRITY → USABILITY → FARM OPERATIONS → REPORTING → FINANCE → ADVANCED FEATURES**
+
+The final result should feel like a professional farm management system that could genuinely be used every day at Boroma Hills Farm.

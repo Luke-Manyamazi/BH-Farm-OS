@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "BH Farm OS"
+description = "A mobile-first farm operations system for Boroma Hills Farm in Zimbabwe, covering livestock, crops, water, inventory, tasks, sales, expenses, alerts, and profitability."
+version = "1.0.0"
+id = "artifacts/bh-farm-os"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19639
+
+[services.development]
+run = "pnpm --filter @workspace/bh-farm-os run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bh-farm-os", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/bh-farm-os/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19639"
+BASE_PATH = "/"

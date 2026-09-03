@@ -1,6 +1,6 @@
-# [Project name]
+# BH Farm OS
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+BH Farm OS is a mobile-first operations dashboard for Boroma Hills Farm in Zimbabwe, covering livestock, tasks, inventory, water, alerts, search, and farm finance.
 
 ## Run & Operate
 
@@ -22,15 +22,24 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/bh-farm-os/src/pages/farm-pages.tsx` — app pages and operational forms.
+- `artifacts/bh-farm-os/src/components/farm-shell.tsx` — responsive navigation and application shell.
+- `artifacts/api-server/src/routes/farm.ts` — API handlers for dashboard, tasks, livestock, inventory, finance, alerts, zones, and search.
+- `artifacts/api-server/src/lib/farm-data.ts` — seed records and response mapping.
+- `lib/db/src/schema/farm.ts` — Drizzle schema for farm records.
+- `lib/api-spec/openapi.yaml` — source of truth for API contracts.
+- `artifacts/bh-farm-os/src/index.css` — shared BH Farm OS visual theme.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first release prioritizes daily farm operations: dashboard, today checklist, zones, livestock, inventory, finance, alerts, search, and working create/complete/transaction flows.
+- Seed records are explicitly labeled as sample data in the UI and are designed to be replaced by live farm entries.
+- Farm modules use normalized PostgreSQL tables and the OpenAPI contract generates both the frontend hooks and server validators.
+- API integer-like values use numeric OpenAPI schemas for compatibility with the current shared Zod/Orval toolchain.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Users can see the farm at a glance, complete recurring daily work, inspect goats and poultry batches, monitor stock and water, record inventory movements, review sample profitability, search records, and act on alerts from desktop or phone.
 
 ## User preferences
 
@@ -38,7 +47,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Regenerate API hooks after changing `lib/api-spec/openapi.yaml` with `pnpm --filter @workspace/api-spec run codegen`.
+- Run `pnpm run typecheck:libs` after changing shared database or generated API packages.
 
 ## Pointers
 

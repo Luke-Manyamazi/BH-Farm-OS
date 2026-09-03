@@ -3,13 +3,27 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: BH Farm OS operations API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: dashboard
+    description: Farm overview and aggregates
+  - name: tasks
+    description: Daily farm tasks
+  - name: livestock
+    description: Livestock records and summaries
+  - name: inventory
+    description: Farm inventory and stock transactions
+  - name: finance
+    description: Sales, expenses, and profitability
+  - name: farm
+    description: Farm zones and assets
+  - name: search
+    description: Global farm search
 paths:
   /healthz:
     get:
@@ -24,13 +38,550 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get the farm dashboard summary
+      responses:
+        "200":
+          description: Dashboard metrics and recent farm activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /zones:
+    get:
+      operationId: listFarmZones
+      tags: [farm]
+      summary: List configured farm zones
+      responses:
+        "200":
+          description: Farm production zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FarmZone"
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      summary: List farm tasks
+      parameters:
+        - $ref: "#/components/parameters/StatusQuery"
+      responses:
+        "200":
+          description: Farm tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Create a farm task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /tasks/{taskId}/complete:
+    patch:
+      operationId: completeTask
+      tags: [tasks]
+      summary: Mark a task complete
+      parameters:
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCompletionInput"
+      responses:
+        "200":
+          description: Completed task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /livestock/summary:
+    get:
+      operationId: getLivestockSummary
+      tags: [livestock]
+      summary: Get livestock counts and health indicators
+      responses:
+        "200":
+          description: Livestock summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LivestockSummary"
+  /livestock/goats:
+    get:
+      operationId: listGoats
+      tags: [livestock]
+      summary: List individual goat records
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Goats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Goat"
+    post:
+      operationId: createGoat
+      tags: [livestock]
+      summary: Add a goat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoatInput"
+      responses:
+        "201":
+          description: Created goat
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goat"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /livestock/flocks:
+    get:
+      operationId: listPoultryFlocks
+      tags: [livestock]
+      summary: List poultry flocks and broiler batches
+      responses:
+        "200":
+          description: Poultry production batches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PoultryFlock"
+  /inventory:
+    get:
+      operationId: listInventory
+      tags: [inventory]
+      summary: List inventory items
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: lowStock
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Inventory items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryItem"
+    post:
+      operationId: createInventoryItem
+      tags: [inventory]
+      summary: Add an inventory item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryItemInput"
+      responses:
+        "201":
+          description: Created inventory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /inventory/{itemId}/transactions:
+    post:
+      operationId: recordInventoryTransaction
+      tags: [inventory]
+      summary: Record an inventory purchase, usage, or adjustment
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryTransactionInput"
+      responses:
+        "200":
+          description: Updated inventory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /finance/summary:
+    get:
+      operationId: getFinanceSummary
+      tags: [finance]
+      summary: Get revenue, expenses, profit, and enterprise performance
+      responses:
+        "200":
+          description: Farm finance summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinanceSummary"
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags: [dashboard]
+      summary: List active farm alerts
+      responses:
+        "200":
+          description: Active alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+  /search:
+    get:
+      operationId: searchFarm
+      tags: [search]
+      summary: Search farm records across modules
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchResult"
 components:
+  parameters:
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: number
+    ItemId:
+      name: itemId
+      in: path
+      required: true
+      schema:
+        type: number
+    StatusQuery:
+      name: status
+      in: query
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Record not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     HealthStatus:
       type: object
       properties:
         status:
           type: string
+      required: [status]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    DashboardSummary:
+      type: object
+      properties:
+        farmName: { type: string }
+        location: { type: string }
+        dateLabel: { type: string }
+        livestock: { $ref: "#/components/schemas/LivestockSummary" }
+        activeCropCycles: { type: number }
+        orchardTrees: { type: number }
+        water: { $ref: "#/components/schemas/WaterSummary" }
+        lowStockItems: { type: number }
+        tasksDueToday: { type: number }
+        overdueTasks: { type: number }
+        monthlyRevenue: { type: number }
+        monthlyExpenses: { type: number }
+        monthlyProfit: { type: number }
+        tasks: { type: array, items: { $ref: "#/components/schemas/Task" } }
+        alerts: { type: array, items: { $ref: "#/components/schemas/Alert" } }
+        recentActivity: { type: array, items: { $ref: "#/components/schemas/Activity" } }
       required:
-        - status
-
+        - farmName
+        - location
+        - dateLabel
+        - livestock
+        - activeCropCycles
+        - orchardTrees
+        - water
+        - lowStockItems
+        - tasksDueToday
+        - overdueTasks
+        - monthlyRevenue
+        - monthlyExpenses
+        - monthlyProfit
+        - tasks
+        - alerts
+        - recentActivity
+    LivestockSummary:
+      type: object
+      properties:
+        total: { type: number }
+        chickens: { type: number }
+        broilers: { type: number }
+        goats: { type: number }
+        pigs: { type: number }
+        fish: { type: number }
+        pregnantGoats: { type: number }
+        sickAnimals: { type: number }
+      required: [total, chickens, broilers, goats, pigs, fish, pregnantGoats, sickAnimals]
+    WaterSummary:
+      type: object
+      properties:
+        tankName: { type: string }
+        currentLitres: { type: number }
+        capacityLitres: { type: number }
+        percentFull: { type: number }
+        daysRemaining: { type: ["number", "null"] }
+      required: [tankName, currentLitres, capacityLitres, percentFull, daysRemaining]
+    FarmZone:
+      type: object
+      properties:
+        id: { type: number }
+        name: { type: string }
+        type: { type: string }
+        dimensions: { type: ["string", "null"] }
+        status: { type: string }
+        accent: { type: string }
+      required: [id, name, type, dimensions, status, accent]
+    Task:
+      type: object
+      properties:
+        id: { type: number }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        farmUnit: { type: string }
+        priority: { type: string }
+        dueDate: { type: string }
+        dueTime: { type: ["string", "null"] }
+        recurrence: { type: ["string", "null"] }
+        status: { type: string }
+        completedAt: { type: ["string", "null"] }
+        assignedTo: { type: ["string", "null"] }
+      required: [id, title, description, farmUnit, priority, dueDate, dueTime, recurrence, status, completedAt, assignedTo]
+    TaskInput:
+      type: object
+      properties:
+        title: { type: string, minLength: 1 }
+        description: { type: string }
+        farmUnit: { type: string, minLength: 1 }
+        priority: { type: string }
+        dueDate: { type: string }
+        dueTime: { type: string }
+        recurrence: { type: string }
+        assignedTo: { type: string }
+      required: [title, farmUnit, dueDate]
+    TaskCompletionInput:
+      type: object
+      properties:
+        notes: { type: string }
+    Goat:
+      type: object
+      properties:
+        id: { type: number }
+        goatId: { type: string }
+        name: { type: string }
+        sex: { type: string }
+        breed: { type: string }
+        dateOfBirth: { type: ["string", "null"] }
+        currentWeightKg: { type: ["number", "null"] }
+        paddock: { type: string }
+        status: { type: string }
+        pregnancyStatus: { type: string }
+        expectedKiddingDate: { type: ["string", "null"] }
+        healthStatus: { type: string }
+        daysRemaining: { type: ["number", "null"] }
+      required: [id, goatId, name, sex, breed, dateOfBirth, currentWeightKg, paddock, status, pregnancyStatus, expectedKiddingDate, healthStatus, daysRemaining]
+    GoatInput:
+      type: object
+      properties:
+        goatId: { type: string, minLength: 1 }
+        name: { type: string, minLength: 1 }
+        sex: { type: string }
+        breed: { type: string }
+        dateOfBirth: { type: string }
+        currentWeightKg: { type: number, minimum: 0 }
+        paddock: { type: string }
+        pregnancyStatus: { type: string }
+        expectedKiddingDate: { type: string }
+        healthStatus: { type: string }
+      required: [goatId, name, sex, breed, paddock]
+    PoultryFlock:
+      type: object
+      properties:
+        id: { type: number }
+        batchId: { type: string }
+        kind: { type: string }
+        breed: { type: string }
+        currentQuantity: { type: number }
+        startingQuantity: { type: number }
+        mortality: { type: number }
+        averageWeightKg: { type: ["number", "null"] }
+        feedKg: { type: number }
+        status: { type: string }
+        expectedSaleDate: { type: ["string", "null"] }
+      required: [id, batchId, kind, breed, currentQuantity, startingQuantity, mortality, averageWeightKg, feedKg, status, expectedSaleDate]
+    InventoryItem:
+      type: object
+      properties:
+        id: { type: number }
+        itemId: { type: string }
+        name: { type: string }
+        category: { type: string }
+        unit: { type: string }
+        quantity: { type: number }
+        minimumStock: { type: number }
+        maximumStock: { type: number }
+        supplier: { type: ["string", "null"] }
+        purchasePrice: { type: ["number", "null"] }
+        storageLocation: { type: ["string", "null"] }
+        isLowStock: { type: boolean }
+      required: [id, itemId, name, category, unit, quantity, minimumStock, maximumStock, supplier, purchasePrice, storageLocation, isLowStock]
+    InventoryItemInput:
+      type: object
+      properties:
+        itemId: { type: string, minLength: 1 }
+        name: { type: string, minLength: 1 }
+        category: { type: string, minLength: 1 }
+        unit: { type: string, minLength: 1 }
+        quantity: { type: number, minimum: 0 }
+        minimumStock: { type: number, minimum: 0 }
+        maximumStock: { type: number, minimum: 0 }
+        supplier: { type: string }
+        purchasePrice: { type: number, minimum: 0 }
+        storageLocation: { type: string }
+      required: [itemId, name, category, unit, quantity, minimumStock, maximumStock]
+    InventoryTransactionInput:
+      type: object
+      properties:
+        type: { type: string, enum: [purchase, usage, adjustment, waste, expired] }
+        quantity: { type: number, exclusiveMinimum: 0 }
+        note: { type: string }
+      required: [type, quantity]
+    FinanceSummary:
+      type: object
+      properties:
+        revenue: { type: number }
+        expenses: { type: number }
+        profit: { type: number }
+        revenueChange: { type: number }
+        expenseChange: { type: number }
+        enterprisePerformance:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnterprisePerformance"
+        monthly:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyFinance"
+      required: [revenue, expenses, profit, revenueChange, expenseChange, enterprisePerformance, monthly]
+    EnterprisePerformance:
+      type: object
+      properties:
+        name: { type: string }
+        revenue: { type: number }
+        expenses: { type: number }
+        profit: { type: number }
+        margin: { type: number }
+      required: [name, revenue, expenses, profit, margin]
+    MonthlyFinance:
+      type: object
+      properties:
+        month: { type: string }
+        revenue: { type: number }
+        expenses: { type: number }
+      required: [month, revenue, expenses]
+    Alert:
+      type: object
+      properties:
+        id: { type: number }
+        severity: { type: string }
+        title: { type: string }
+        detail: { type: string }
+        category: { type: string }
+        dueLabel: { type: ["string", "null"] }
+      required: [id, severity, title, detail, category, dueLabel]
+    Activity:
+      type: object
+      properties:
+        id: { type: number }
+        title: { type: string }
+        detail: { type: string }
+        timestamp: { type: string }
+        type: { type: string }
+      required: [id, title, detail, timestamp, type]
+    SearchResult:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        subtitle: { type: string }
+        module: { type: string }
+        kind: { type: string }
+      required: [id, title, subtitle, module, kind]
