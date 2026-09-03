@@ -81,37 +81,33 @@ router.get("/dashboard/summary", async (_req, res): Promise<void> => {
   const revenue = finance.filter((item) => item.type === "income").reduce((sum, item) => sum + toNumber(item.amount), 0);
   const expenses = finance.filter((item) => item.type === "expense").reduce((sum, item) => sum + toNumber(item.amount), 0);
   const taskList = tasks.filter((task) => task.status !== "Completed");
-  const activity = [
-    { id: 1, title: "Sample records loaded", detail: "BH Farm OS is ready for live farm entries.", timestamp: new Date().toISOString(), type: "system" },
-    { id: 2, title: "Broiler batch BR-001 updated", detail: "118 birds currently active · 1.82kg average weight", timestamp: new Date(Date.now() - 86_400_000).toISOString(), type: "livestock" },
-    { id: 3, title: "Tomato harvest approaching", detail: "Commercial garden forecast is 8 days out.", timestamp: new Date(Date.now() - 2 * 86_400_000).toISOString(), type: "crop" },
-  ];
+  const overdueTasks = tasks.filter((task) => task.status !== "Completed" && task.dueDate < today).length;
   const result = {
     farmName: "Boroma Hills Farm",
     location: "Zimbabwe",
     dateLabel: new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(new Date()),
     livestock: {
-      total: flocks.reduce((sum, item) => sum + item.currentQuantity, 0) + goats.filter((goat) => !["Sold", "Deceased"].includes(goat.status)).length + 36,
+      total: flocks.reduce((sum, item) => sum + item.currentQuantity, 0) + goats.filter((goat) => !["Sold", "Deceased"].includes(goat.status)).length,
       chickens: flocks.filter((item) => item.kind === "Free-range").reduce((sum, item) => sum + item.currentQuantity, 0),
       broilers: flocks.filter((item) => item.kind === "Broiler").reduce((sum, item) => sum + item.currentQuantity, 0),
       goats: goats.filter((goat) => !["Sold", "Deceased"].includes(goat.status)).length,
-      pigs: 18,
-      fish: 240,
+      pigs: 0,
+      fish: 0,
       pregnantGoats: goats.filter((goat) => goat.pregnancyStatus === "Pregnant").length,
       sickAnimals: goats.filter((goat) => goat.healthStatus !== "Good").length,
     },
-    activeCropCycles: 4,
-    orchardTrees: 28,
-    water: { tankName: "5,000L JoJo tank", currentLitres: 3900, capacityLitres: 5000, percentFull: 78, daysRemaining: 6 },
+    activeCropCycles: 0,
+    orchardTrees: 0,
+    water: { tankName: "Water tank", currentLitres: 0, capacityLitres: 0, percentFull: 0, daysRemaining: 0 },
     lowStockItems: inventory.filter((item) => toNumber(item.quantity) <= toNumber(item.minimumStock)).length,
     tasksDueToday: tasks.filter((task) => task.dueDate === today && task.status !== "Completed").length,
-    overdueTasks: 1,
+    overdueTasks,
     monthlyRevenue: revenue,
     monthlyExpenses: expenses,
     monthlyProfit: revenue - expenses,
     tasks: taskList.slice(0, 6),
     alerts: alerts.slice(0, 6),
-    recentActivity: activity,
+    recentActivity: [],
   };
   res.json(GetDashboardSummaryResponse.parse(result));
 });

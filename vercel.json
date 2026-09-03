@@ -1,0 +1,10 @@
+{
+  "framework": "vite",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @workspace/bh-farm-os run build",
+  "outputDirectory": "artifacts/bh-farm-os/dist/public",
+  "env": {
+    "PORT": "3000",
+    "BASE_PATH": "/"
+  }
+}

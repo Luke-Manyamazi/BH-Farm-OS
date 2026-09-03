@@ -16,7 +16,7 @@
 # passed (e.g. an urgent security bugfix), you can add it to the
 # `minimumReleaseAgeExclude` allowlist below. Only consider doing this for
 # packages released by trusted organizations with an impeccable security
-# posture (e.g. Replit packsges, react from Meta, typescript from Microsoft). Even then,
+# posture (e.g. react from Meta, typescript from Microsoft). Even then,
 # remove the exclusion once the 1-day window has passed.
 #
 # Example:
@@ -27,12 +27,7 @@
 # ============================================================================
 minimumReleaseAge: 1440
 
-minimumReleaseAgeExclude:
-  # Exclude @replit scoped packages from the minimum release age check.
-  # These are published by Replit and trusted — the supply-chain attack vector
-  # this setting guards against does not apply to our own packages.
-  - '@replit/*'
-  - stripe-replit-sync
+minimumReleaseAgeExclude: []
 
 packages:
   - artifacts/*
@@ -73,26 +68,6 @@ onlyBuiltDependencies:
   - esbuild
   - msw
   - unrs-resolver
-
-overrides:
-  # replit uses linux-x64 only, we can exclude all other platforms
-  "esbuild>@esbuild/darwin-arm64": "-"
-  "esbuild>@esbuild/darwin-x64": "-"
-  "esbuild>@esbuild/freebsd-arm64": "-"
-  "esbuild>@esbuild/freebsd-x64": "-"
-  "esbuild>@esbuild/linux-arm": "-"
-  "esbuild>@esbuild/linux-arm64": "-"
-  "esbuild>@esbuild/linux-ia32": "-"
-  "esbuild>@esbuild/linux-loong64": "-"
-  "esbuild>@esbuild/linux-mips64el": "-"
-  "esbuild>@esbuild/linux-ppc64": "-"
-  "esbuild>@esbuild/linux-riscv64": "-"
-  "esbuild>@esbuild/linux-s390x": "-"
-  "esbuild>@esbuild/netbsd-arm64": "-"
-  "esbuild>@esbuild/netbsd-x64": "-"
-  "esbuild>@esbuild/openbsd-arm64": "-"
-  "esbuild>@esbuild/openbsd-x64": "-"
-  "esbuild>@esbuild/sunos-x64": "-"
   "esbuild>@esbuild/win32-arm64": "-"
   "esbuild>@esbuild/win32-ia32": "-"
   "esbuild>@esbuild/win32-x64": "-"
