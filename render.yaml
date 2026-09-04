@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: bh-farm-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/healthz
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false
