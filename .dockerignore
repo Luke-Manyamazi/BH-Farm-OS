@@ -1,0 +1,9 @@
+.git
+.github
+.vercel
+.env*
+node_modules
+dist
+tmp
+out-tsc
+*.tsbuildinfo
