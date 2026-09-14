@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Bell, CalendarCheck, ChevronRight, CircleDollarSign, ClipboardList, CloudSun, Construction, Database, Egg, LayoutDashboard, Map, Menu, Package, Search, Sprout, Tractor, X } from 'lucide-react';
+import { Bell, CalendarCheck, ChevronRight, CircleDollarSign, ClipboardList, CloudSun, Construction, Database, Egg, Fish, LayoutDashboard, Map, Menu, Package, Search, Sprout, Tractor, TreePine, Waves, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { getHealthCheckQueryKey, useHealthCheck } from '@workspace/api-client-react';
 
@@ -8,12 +8,20 @@ const nav = [
   { href: '/today', label: "Today's work", icon: CalendarCheck },
   { href: '/farm-map', label: 'Farm map', icon: Map },
   { href: '/livestock', label: 'Livestock', icon: Tractor },
+  { href: '/pigs', label: 'Pigs', icon: Tractor },
+  { href: '/fish', label: 'Fish', icon: Fish },
   { href: '/crops', label: 'Crops', icon: Sprout },
-  { href: '/garden', label: 'Garden', icon: Sprout },
-  { href: '/orchard', label: 'Orchard', icon: Sprout },
-  { href: '/water', label: 'Water & irrigation', icon: CloudSun },
+  { href: '/crop-activities', label: 'Crop activities', icon: Sprout },
+  { href: '/garden', label: 'Home garden', icon: Sprout },
+  { href: '/commercial-garden', label: 'Commercial garden', icon: Sprout },
+  { href: '/greenhouse', label: 'Greenhouse', icon: Sprout },
+  { href: '/orchard', label: 'Orchard', icon: TreePine },
+  { href: '/water', label: 'Water tanks', icon: Waves },
+  { href: '/water/usage', label: 'Water usage', icon: CloudSun },
+  { href: '/irrigation', label: 'Irrigation', icon: CloudSun },
   { href: '/inventory', label: 'Inventory', icon: Package },
   { href: '/tasks', label: 'Tasks', icon: ClipboardList },
+  { href: '/calendar', label: 'Calendar', icon: CalendarCheck },
   { href: '/sales', label: 'Sales', icon: CircleDollarSign },
   { href: '/expenses', label: 'Expenses', icon: CircleDollarSign },
   { href: '/finance', label: 'Finance', icon: CircleDollarSign },
@@ -42,6 +50,9 @@ function Sidebar({ close }: { close?: () => void }) {
     <nav className="space-y-1">
       <Link data-testid="link-nav-goats" href="/livestock/goats" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/livestock/goats') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><Egg size={17} /><span>Goat register</span></Link>
       <Link data-testid="link-nav-poultry" href="/livestock/poultry" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/livestock/poultry') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><CloudSun size={17} /><span>Poultry batches</span></Link>
+      <Link data-testid="link-nav-fish-water" href="/fish/water-quality" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/fish/water-quality') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><Waves size={17} /><span>Fish water quality</span></Link>
+      <Link data-testid="link-nav-health" href="/health" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/health') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><Tractor size={17} /><span>Animal health</span></Link>
+      <Link data-testid="link-nav-crop-health" href="/crop-health" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/crop-health') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><Sprout size={17} /><span>Crop health</span></Link>
       <Link data-testid="link-nav-alerts" href="/alerts" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/alerts') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><Bell size={17} /><span>Alerts</span></Link>
       <Link data-testid="link-nav-demo-data" href="/demo-data" onClick={close} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium ${location.startsWith('/demo-data') ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-primary))]' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-white/[.07]'}`}><Database size={17} /><span>Demo data</span></Link>
     </nav>
