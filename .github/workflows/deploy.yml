@@ -33,6 +33,7 @@ jobs:
         run: pnpm run typecheck
 
       - name: Diagnose Supabase connection
+        working-directory: ./lib/db
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
         run: |
