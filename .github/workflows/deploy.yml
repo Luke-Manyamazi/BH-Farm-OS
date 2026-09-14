@@ -32,6 +32,39 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
+      - name: Diagnose Supabase connection
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+        run: |
+          node <<'NODE'
+          const { URL } = require('url');
+          const dns = require('dns').promises;
+          const { Client } = require('pg');
+
+          (async () => {
+            const u = new URL(process.env.DATABASE_URL);
+            console.log(`DB host: ${u.hostname}`);
+            console.log(`DB port: ${u.port || '5432'}`);
+            console.log(`DB user: ${decodeURIComponent(u.username)}`);
+            console.log(`Pooler host: ${u.hostname.includes('pooler.supabase.com')}`);
+            console.log(`IPv4 addresses: ${(await dns.resolve4(u.hostname)).join(', ') || '(none)'}`);
+
+            const client = new Client({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 10000, ssl: { rejectUnauthorized: false } });
+            try {
+              await client.connect();
+              const r = await client.query('select current_database() as database, current_user as user');
+              console.log(`DB connection: OK (${r.rows[0].database} / ${r.rows[0].user})`);
+              await client.end();
+            } catch (err) {
+              console.error(`DB connection: FAILED (${err.code || 'no-code'}): ${err.message}`);
+              process.exit(1);
+            }
+          })().catch(err => {
+            console.error(`DB diagnostic: FAILED (${err.code || 'no-code'}): ${err.message}`);
+            process.exit(1);
+          });
+          NODE
+
       - name: Push database schema to Supabase
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
