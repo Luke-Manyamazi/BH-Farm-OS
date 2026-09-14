@@ -12,11 +12,12 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      # The lockfile is generated with pnpm 10. Use the same major version in CI
-      # so --frozen-lockfile validates the workspace configuration consistently.
+      # The lockfile is generated with pnpm 10.
+      # Use the same major version in CI.
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -32,6 +33,9 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
+      # Diagnose the actual Supabase connection before Drizzle runs.
+      # Run from the DB workspace so the workspace dependency `pg`
+      # is resolvable.
       - name: Diagnose Supabase connection
         working-directory: ./lib/db
         env:
@@ -44,41 +48,85 @@ jobs:
 
           (async () => {
             const u = new URL(process.env.DATABASE_URL);
+
             console.log(`DB host: ${u.hostname}`);
             console.log(`DB port: ${u.port || '5432'}`);
             console.log(`DB user: ${decodeURIComponent(u.username)}`);
-            console.log(`Pooler host: ${u.hostname.includes('pooler.supabase.com')}`);
-            console.log(`IPv4 addresses: ${(await dns.resolve4(u.hostname)).join(', ') || '(none)'}`);
+            console.log(
+              `Pooler host: ${u.hostname.includes('pooler.supabase.com')}`
+            );
 
-            const client = new Client({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 10000, ssl: { rejectUnauthorized: false } });
+            const ipv4 = await dns.resolve4(u.hostname);
+
+            console.log(
+              `IPv4 addresses: ${ipv4.join(', ') || '(none)'}`
+            );
+
+            const client = new Client({
+              connectionString: process.env.DATABASE_URL,
+              connectionTimeoutMillis: 10000,
+              ssl: {
+                rejectUnauthorized: false,
+              },
+            });
+
             try {
               await client.connect();
-              const r = await client.query('select current_database() as database, current_user as user');
-              console.log(`DB connection: OK (${r.rows[0].database} / ${r.rows[0].user})`);
+
+              const result = await client.query(
+                'select current_database() as database, current_user as user'
+              );
+
+              console.log(
+                `DB connection: OK (${result.rows[0].database} / ${result.rows[0].user})`
+              );
+
               await client.end();
             } catch (err) {
-              console.error(`DB connection: FAILED (${err.code || 'no-code'}): ${err.message}`);
+              console.error(
+                `DB connection: FAILED (${err.code || 'no-code'}): ${err.message}`
+              );
+
               process.exit(1);
             }
           })().catch(err => {
-            console.error(`DB diagnostic: FAILED (${err.code || 'no-code'}): ${err.message}`);
+            console.error(
+              `DB diagnostic: FAILED (${err.code || 'no-code'}): ${err.message}`
+            );
+
             process.exit(1);
           });
           NODE
 
+      # Push the Drizzle schema to the Supabase database.
       - name: Push database schema to Supabase
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
         run: pnpm --filter @workspace/db run push
 
+      # Install Vercel CLI.
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
 
+      # Pull production Vercel environment.
       - name: Pull Vercel environment
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull \
+            --yes \
+            --environment=production \
+            --token=${{ secrets.VERCEL_TOKEN }}
 
+      # Build the production Vercel deployment.
       - name: Build Vercel project
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel build \
+            --prod \
+            --token=${{ secrets.VERCEL_TOKEN }}
 
+      # Deploy the prebuilt project.
       - name: Deploy to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel deploy \
+            --prebuilt \
+            --prod \
+            --token=${{ secrets.VERCEL_TOKEN }}
