@@ -5,6 +5,7 @@ import farmRouter from "./farm";
 import operationsRouter from "./operations";
 import demoRouter from "./demo";
 import goatManagementRouter from "./goat-management";
+import poultryManagementRouter from "./poultry-management";
 
 const router: IRouter = Router();
 
@@ -15,6 +16,7 @@ router.use(farmOverridesRouter);
 router.use(farmRouter);
 router.use(operationsRouter);
 router.use(goatManagementRouter);
+router.use(poultryManagementRouter);
 router.use(demoRouter);
 
 export default router;
