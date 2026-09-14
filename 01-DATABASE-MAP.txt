@@ -1,0 +1,192 @@
+BH-FARM-OS DATABASE MAP
+Generated: 09/14/2026 17:39:12
+
+=== DATABASE FILES ===
+\lib\db\drizzle.config.ts
+\lib\db\dist\index.d.ts
+\lib\db\dist\schema\farm.d.ts
+\lib\db\dist\schema\index.d.ts
+\lib\db\src\index.ts
+\lib\db\src\schema\farm.ts
+\lib\db\src\schema\index.ts
+
+=== TABLE / RELATIONSHIP DEFINITIONS ===
+
+### pgTable(
+\lib\db\src\schema\farm.ts:12: export const farmZonesTable = pgTable("farm_zones", {
+\lib\db\src\schema\farm.ts:21: export const tasksTable = pgTable("farm_tasks", {
+\lib\db\src\schema\farm.ts:36: export const goatsTable = pgTable("goats", {
+\lib\db\src\schema\farm.ts:51: export const poultryFlocksTable = pgTable("poultry_flocks", {
+\lib\db\src\schema\farm.ts:65: export const inventoryItemsTable = pgTable("inventory_items", {
+\lib\db\src\schema\farm.ts:80: export const inventoryTransactionsTable = pgTable("inventory_transactions", {
+\lib\db\src\schema\farm.ts:89: export const financeTransactionsTable = pgTable("finance_transactions", {
+\lib\db\src\schema\index.ts:11: //   export const postsTable = pgTable("posts", {
+
+### mysqlTable(
+
+### sqliteTable(
+
+### relations(
+
+### foreignKey(
+
+### references(
+
+### primaryKey(
+\lib\db\src\schema\farm.ts:13: id: serial("id").primaryKey(),
+\lib\db\src\schema\farm.ts:22: id: serial("id").primaryKey(),
+\lib\db\src\schema\farm.ts:37: id: serial("id").primaryKey(),
+\lib\db\src\schema\farm.ts:52: id: serial("id").primaryKey(),
+\lib\db\src\schema\farm.ts:66: id: serial("id").primaryKey(),
+\lib\db\src\schema\farm.ts:81: id: serial("id").primaryKey(),
+\lib\db\src\schema\farm.ts:90: id: serial("id").primaryKey(),
+\lib\db\src\schema\index.ts:12: //     id: serial("id").primaryKey(),
+
+=== FARM DOMAIN TERMS ===
+
+### goat
+\lib\db\dist\schema\farm.d.ts:321: export declare const goatsTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:322: name: "goats";
+\lib\db\dist\schema\farm.d.ts:327: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:342: goatId: import("drizzle-orm/pg-core").PgColumn<{
+\lib\db\dist\schema\farm.d.ts:343: name: "goat_id";
+\lib\db\dist\schema\farm.d.ts:344: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:361: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:378: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:395: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:412: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:429: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:446: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:463: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:480: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:497: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:514: tableName: "goats";
+\lib\db\dist\schema\farm.d.ts:1191: export type Goat = typeof goatsTable.$inferSelect;
+\lib\db\src\schema\farm.ts:36: export const goatsTable = pgTable("goats", {
+\lib\db\src\schema\farm.ts:38: goatId: text("goat_id").notNull().unique(),
+\lib\db\src\schema\farm.ts:102: export type Goat = typeof goatsTable.$inferSelect;
+
+### livestock
+
+### poultry
+\lib\db\dist\schema\farm.d.ts:532: export declare const poultryFlocksTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:533: name: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:538: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:555: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:572: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:589: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:606: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:623: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:640: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:657: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:674: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:691: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:708: tableName: "poultry_flocks";
+\lib\db\dist\schema\farm.d.ts:1192: export type PoultryFlock = typeof poultryFlocksTable.$inferSelect;
+\lib\db\src\schema\farm.ts:51: export const poultryFlocksTable = pgTable("poultry_flocks", {
+\lib\db\src\schema\farm.ts:103: export type PoultryFlock = typeof poultryFlocksTable.$inferSelect;
+
+### pig
+
+### fish
+
+### crop
+
+### orchard
+
+### zone
+\lib\db\dist\schema\farm.d.ts:1: export declare const farmZonesTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:2: name: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:7: tableName: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:24: tableName: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:41: tableName: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:58: tableName: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:75: tableName: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:92: tableName: "farm_zones";
+\lib\db\dist\schema\farm.d.ts:1189: export type FarmZone = typeof farmZonesTable.$inferSelect;
+\lib\db\src\schema\farm.ts:12: export const farmZonesTable = pgTable("farm_zones", {
+\lib\db\src\schema\farm.ts:31: completedAt: timestamp("completed_at", { withTimezone: true }),
+\lib\db\src\schema\farm.ts:86: createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+\lib\db\src\schema\farm.ts:100: export type FarmZone = typeof farmZonesTable.$inferSelect;
+
+### paddock
+\lib\db\dist\schema\farm.d.ts:444: paddock: import("drizzle-orm/pg-core").PgColumn<{
+\lib\db\dist\schema\farm.d.ts:445: name: "paddock";
+\lib\db\src\schema\farm.ts:44: paddock: text("paddock").notNull().default("Paddock 1"),
+
+### water
+
+### tank
+
+### inventory
+\lib\db\dist\schema\farm.d.ts:726: export declare const inventoryItemsTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:727: name: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:732: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:749: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:766: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:783: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:800: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:817: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:834: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:851: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:868: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:885: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:902: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:919: tableName: "inventory_items";
+\lib\db\dist\schema\farm.d.ts:937: export declare const inventoryTransactionsTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:938: name: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:943: tableName: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:958: inventoryItemId: import("drizzle-orm/pg-core").PgColumn<{
+\lib\db\dist\schema\farm.d.ts:959: name: "inventory_item_id";
+\lib\db\dist\schema\farm.d.ts:960: tableName: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:977: tableName: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:994: tableName: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:1011: tableName: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:1028: tableName: "inventory_transactions";
+\lib\db\dist\schema\farm.d.ts:1193: export type InventoryItem = typeof inventoryItemsTable.$inferSelect;
+\lib\db\src\schema\farm.ts:65: export const inventoryItemsTable = pgTable("inventory_items", {
+\lib\db\src\schema\farm.ts:80: export const inventoryTransactionsTable = pgTable("inventory_transactions", {
+\lib\db\src\schema\farm.ts:82: inventoryItemId: integer("inventory_item_id").notNull(),
+\lib\db\src\schema\farm.ts:104: export type InventoryItem = typeof inventoryItemsTable.$inferSelect;
+
+### finance
+\lib\db\dist\schema\farm.d.ts:1046: export declare const financeTransactionsTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:1047: name: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1052: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1069: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1086: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1103: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1120: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1137: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1154: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1171: tableName: "finance_transactions";
+\lib\db\dist\schema\farm.d.ts:1194: export type FinanceTransaction = typeof financeTransactionsTable.$inferSelect;
+\lib\db\src\schema\farm.ts:89: export const financeTransactionsTable = pgTable("finance_transactions", {
+\lib\db\src\schema\farm.ts:105: export type FinanceTransaction = typeof financeTransactionsTable.$inferSelect;
+
+### expense
+
+### revenue
+
+### task
+\lib\db\dist\schema\farm.d.ts:110: export declare const tasksTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+\lib\db\dist\schema\farm.d.ts:111: name: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:116: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:133: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:150: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:167: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:184: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:201: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:218: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:235: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:252: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:269: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:286: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:303: tableName: "farm_tasks";
+\lib\db\dist\schema\farm.d.ts:1190: export type Task = typeof tasksTable.$inferSelect;
+\lib\db\src\schema\farm.ts:21: export const tasksTable = pgTable("farm_tasks", {
+\lib\db\src\schema\farm.ts:101: export type Task = typeof tasksTable.$inferSelect;
+
+### alert
+
+=== END ===
