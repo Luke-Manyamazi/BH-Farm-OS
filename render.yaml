@@ -4,8 +4,17 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    region: frankfurt
     healthCheckPath: /api/healthz
     autoDeploy: true
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: bh-farm-db
+          property: connectionString
+
+databases:
+  - name: bh-farm-db
+    plan: free
+    region: frankfurt
+    databaseName: bhfarm
