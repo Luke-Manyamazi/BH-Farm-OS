@@ -55,7 +55,7 @@ function Router() {
     <Route path="/reports"><Operations type="production" /></Route>
     <Route path="/equipment"><Operations type="equipment" /></Route>
     <Route path="/resources"><Operations type="compost" /></Route>
-    <Route path="/farm-records" component={FarmOperationsPage} />
+    <Route path="/farm-records"><FarmOperationsPage /></Route>
     <Route path="/alerts" component={AlertsPage} />
     <Route path="/search" component={SearchPage} />
     <Route component={NotFound} />
