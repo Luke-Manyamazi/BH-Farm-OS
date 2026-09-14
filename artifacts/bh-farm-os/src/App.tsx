@@ -8,6 +8,7 @@ import { AlertsPage, DashboardPage, FarmMapPage, FinancePage, InventoryPage, Liv
 import { FarmOperationsPage } from '@/pages/farm-operations';
 import GoatManagementPage from '@/pages/goat-management';
 import PoultryManagementPage from '@/pages/poultry-management';
+import PigManagementPage from '@/pages/pig-management';
 import DemoDataPage from '@/pages/demo-data';
 import { setBaseUrl } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
@@ -20,10 +21,7 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
 }
-
-function Operations({ type }: { type?: string }) {
-  return <FarmOperationsPage defaultType={type} />;
-}
+function Operations({ type }: { type?: string }) { return <FarmOperationsPage defaultType={type} />; }
 
 function Router() {
   return <FarmShell><RoutedErrorBoundary><Switch>
@@ -33,7 +31,7 @@ function Router() {
     <Route path="/livestock" component={LivestockPage} />
     <Route path="/livestock/goats" component={GoatManagementPage} />
     <Route path="/livestock/poultry" component={PoultryManagementPage} />
-    <Route path="/pigs"><Operations type="pig" /></Route>
+    <Route path="/pigs" component={PigManagementPage} />
     <Route path="/fish"><Operations type="fish" /></Route>
     <Route path="/fish/water-quality"><Operations type="fish_water_quality" /></Route>
     <Route path="/fields"><Operations type="field" /></Route>
@@ -65,9 +63,5 @@ function Router() {
     <Route component={NotFound} />
   </Switch></RoutedErrorBoundary></FarmShell>;
 }
-
-function App() {
-  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;
-}
-
+function App() { return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>; }
 export default App;
