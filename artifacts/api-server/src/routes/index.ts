@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import healthRouter from "./health";
+import authRouter, { requireAuth } from "./auth";
 import farmOverridesRouter from "./farm-overrides";
 import farmRouter from "./farm";
 import operationsRouter from "./operations";
@@ -11,8 +12,8 @@ import pigManagementRouter from "./pig-management";
 const router: IRouter = Router();
 
 router.use(healthRouter);
-// Keep live aggregate routes before the legacy farm routes so the dashboard,
-// livestock summary, zones and alerts use the new operational records.
+router.use(authRouter);
+router.use(requireAuth);
 router.use(farmOverridesRouter);
 router.use(farmRouter);
 router.use(operationsRouter);
