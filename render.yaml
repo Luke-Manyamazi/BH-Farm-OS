@@ -8,7 +8,8 @@ services:
     healthCheckPath: /api/healthz
     autoDeploy: true
     envVars:
-      # The API must use the same Supabase PostgreSQL database as local development
-      # and the database-schema GitHub Actions workflow. Set this value in Render.
+      # Render is IPv4-only. Use the Supabase Supavisor Session Pooler URL
+      # (pooler.supabase.com, port 5432), not the direct db.<project-ref>.supabase.co URL.
+      # Set DATABASE_URL in the Render service environment variables.
       - key: DATABASE_URL
         sync: false
