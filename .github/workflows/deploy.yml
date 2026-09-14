@@ -99,10 +99,11 @@ jobs:
           NODE
 
       # Push the Drizzle schema to the Supabase database.
+      # Use the force variant because GitHub Actions has no interactive TTY.
       - name: Push database schema to Supabase
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
-        run: pnpm --filter @workspace/db run push
+        run: pnpm --filter @workspace/db run push-force
 
       # Install Vercel CLI.
       - name: Install Vercel CLI
@@ -125,7 +126,7 @@ jobs:
 
       # Deploy the prebuilt project.
       - name: Deploy to Vercel
-        run: |
+      run: |
           vercel deploy \
             --prebuilt \
             --prod \
