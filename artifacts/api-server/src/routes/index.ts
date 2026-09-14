@@ -3,6 +3,7 @@ import healthRouter from "./health";
 import farmOverridesRouter from "./farm-overrides";
 import farmRouter from "./farm";
 import operationsRouter from "./operations";
+import demoRouter from "./demo";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use(healthRouter);
 router.use(farmOverridesRouter);
 router.use(farmRouter);
 router.use(operationsRouter);
+router.use(demoRouter);
 
 export default router;
