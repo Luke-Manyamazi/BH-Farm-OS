@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import healthRouter from "./health";
 import authRouter, { requireAuth } from "./auth";
+import authPermissionsRouter from "./auth-permissions";
 import farmOverridesRouter from "./farm-overrides";
 import farmRouter from "./farm";
 import operationsRouter from "./operations";
@@ -10,9 +11,9 @@ import poultryManagementRouter from "./poultry-management";
 import pigManagementRouter from "./pig-management";
 
 const router: IRouter = Router();
-
 router.use(healthRouter);
 router.use(authRouter);
+router.use(authPermissionsRouter);
 router.use(requireAuth);
 router.use(farmOverridesRouter);
 router.use(farmRouter);
@@ -21,5 +22,4 @@ router.use(goatManagementRouter);
 router.use(poultryManagementRouter);
 router.use(pigManagementRouter);
 router.use(demoRouter);
-
 export default router;
