@@ -6,6 +6,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { FarmShell } from '@/components/farm-shell';
 import { AlertsPage, DashboardPage, FarmMapPage, FinancePage, GoatsPage, InventoryPage, LivestockPage, PoultryPage, SearchPage, TasksPage, TodayPage } from '@/pages/farm-pages';
 import { FarmOperationsPage } from '@/pages/farm-operations';
+import DemoDataPage from '@/pages/demo-data';
 import { setBaseUrl } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
 import { Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
@@ -56,6 +57,7 @@ function Router() {
     <Route path="/equipment"><Operations type="equipment" /></Route>
     <Route path="/resources"><Operations type="compost" /></Route>
     <Route path="/farm-records"><FarmOperationsPage /></Route>
+    <Route path="/demo-data" component={DemoDataPage} />
     <Route path="/alerts" component={AlertsPage} />
     <Route path="/search" component={SearchPage} />
     <Route component={NotFound} />
