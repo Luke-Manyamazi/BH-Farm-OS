@@ -30,9 +30,9 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
-      - name: Push database schema
+      - name: Push database schema to Supabase
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
         run: pnpm --filter @workspace/db run push
 
       - name: Install Vercel CLI
