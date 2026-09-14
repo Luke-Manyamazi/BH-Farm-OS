@@ -4,8 +4,9 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/toaster';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { FarmShell } from '@/components/farm-shell';
-import { AlertsPage, DashboardPage, FarmMapPage, FinancePage, GoatsPage, InventoryPage, LivestockPage, PoultryPage, SearchPage, TasksPage, TodayPage } from '@/pages/farm-pages';
+import { AlertsPage, DashboardPage, FarmMapPage, FinancePage, InventoryPage, LivestockPage, PoultryPage, SearchPage, TasksPage, TodayPage } from '@/pages/farm-pages';
 import { FarmOperationsPage } from '@/pages/farm-operations';
+import GoatManagementPage from '@/pages/goat-management';
 import DemoDataPage from '@/pages/demo-data';
 import { setBaseUrl } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
@@ -29,7 +30,7 @@ function Router() {
     <Route path="/today" component={TodayPage} />
     <Route path="/farm-map" component={FarmMapPage} />
     <Route path="/livestock" component={LivestockPage} />
-    <Route path="/livestock/goats" component={GoatsPage} />
+    <Route path="/livestock/goats" component={GoatManagementPage} />
     <Route path="/livestock/poultry" component={PoultryPage} />
     <Route path="/pigs"><Operations type="pig" /></Route>
     <Route path="/fish"><Operations type="fish" /></Route>
