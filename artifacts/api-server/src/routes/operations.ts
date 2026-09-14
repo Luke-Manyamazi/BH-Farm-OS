@@ -60,7 +60,8 @@ router.post("/operations/bootstrap", async (_req, res): Promise<void> => {
   if (existing.length || existingZones.length) { res.json({ created: false, message: "Farm setup already contains records." }); return; }
 
   const setup = [
-    ["water_tank", "5,000L JoJo Tank", "Active", "Water", { capacityLitres: 5000, currentLitres: 3900, source: "Manual entry" }],
+    // Bootstrap creates structure/configuration only. It must not invent current farm measurements.
+    ["water_tank", "5,000L JoJo Tank", "Active", "Water", { capacityLitres: 5000, source: "Manual entry required" }],
     ["pig", "Piggery", "Planned", "Piggery", { dimensions: "10m × 20m", purpose: "Breeding and growing pigs" }],
     ["fish", "Fish Tank 1", "Planned", "Fish", { dimensions: "10m × 10m", species: "Not stocked", numberStocked: 0 }],
     ["fish", "Fish Tank 2", "Planned", "Fish", { dimensions: "10m × 10m", species: "Not stocked", numberStocked: 0 }],
