@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { FarmShell } from '@/components/farm-shell';
 import { AlertsPage, DashboardPage, FarmMapPage, FinancePage, InventoryPage, LivestockPage, SearchPage, TasksPage, TodayPage } from '@/pages/farm-pages';
+import { FarmHomePage } from '@/pages/farm-home';
 import { FarmOperationsPage } from '@/pages/farm-operations';
 import GoatManagementPage from '@/pages/goat-management';
 import PoultryManagementPage from '@/pages/poultry-management';
@@ -25,7 +26,8 @@ function Operations({ type }: { type?: string }) { return <FarmOperationsPage de
 
 function Router() {
   return <FarmShell><RoutedErrorBoundary><Switch>
-    <Route path="/" component={DashboardPage} />
+    <Route path="/" component={FarmHomePage} />
+    <Route path="/overview" component={DashboardPage} />
     <Route path="/today" component={TodayPage} />
     <Route path="/farm-map" component={FarmMapPage} />
     <Route path="/livestock" component={LivestockPage} />
