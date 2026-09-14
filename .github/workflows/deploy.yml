@@ -110,7 +110,7 @@ jobs:
         run: pnpm add --global vercel@latest
 
       # Pull production Vercel environment.
-      - name: Pull Vercel environment
+      - name: Pull production Vercel environment
         run: |
           vercel pull \
             --yes \
@@ -126,7 +126,7 @@ jobs:
 
       # Deploy the prebuilt project.
       - name: Deploy to Vercel
-      run: |
+        run: |
           vercel deploy \
             --prebuilt \
             --prod \
