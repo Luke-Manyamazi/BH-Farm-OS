@@ -1,7 +1,7 @@
 import {
-  boolean,
   date,
   integer,
+  jsonb,
   numeric,
   pgTable,
   serial,
@@ -97,9 +97,29 @@ export const financeTransactionsTable = pgTable("finance_transactions", {
   counterparty: text("counterparty"),
 });
 
+/**
+ * Flexible operational records for modules that are intentionally extensible:
+ * pigs, fish, crops, gardens, greenhouse, orchard, water, irrigation,
+ * health, sales, expenses, equipment, compost, calendar events and future
+ * IoT/AI metadata. Core high-integrity domains (goats, poultry, inventory,
+ * tasks and finance) remain in their dedicated tables above.
+ */
+export const farmRecordsTable = pgTable("farm_records", {
+  id: serial("id").primaryKey(),
+  recordType: text("record_type").notNull(),
+  name: text("name").notNull(),
+  status: text("status").notNull().default("Active"),
+  farmUnit: text("farm_unit").notNull().default("General"),
+  recordDate: date("record_date", { mode: "string" }),
+  data: jsonb("data").$type<Record<string, unknown>>().notNull().default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type FarmZone = typeof farmZonesTable.$inferSelect;
 export type Task = typeof tasksTable.$inferSelect;
 export type Goat = typeof goatsTable.$inferSelect;
 export type PoultryFlock = typeof poultryFlocksTable.$inferSelect;
 export type InventoryItem = typeof inventoryItemsTable.$inferSelect;
 export type FinanceTransaction = typeof financeTransactionsTable.$inferSelect;
+export type FarmRecord = typeof farmRecordsTable.$inferSelect;
