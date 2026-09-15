@@ -238,16 +238,17 @@ router.get("/auth/farms", requireAuth, async (req, res, next) => {
 
 router.post("/auth/farms/:farmId/select", requireAuth, async (req, res, next) => {
   try {
+    const farmId = String(req.params.farmId);
     const isPlatform = req.authUser!.role === "platform_admin";
-    const membership = isPlatform ? { farmId: req.params.farmId } : (await db.select().from(authUserFarms).where(and(eq(authUserFarms.userId, req.authUser!.id), eq(authUserFarms.farmId, req.params.farmId), eq(authUserFarms.active, true))).limit(1))[0];
+    const membership = isPlatform ? { farmId } : (await db.select().from(authUserFarms).where(and(eq(authUserFarms.userId, req.authUser!.id), eq(authUserFarms.farmId, farmId), eq(authUserFarms.active, true))).limit(1))[0];
     if (!membership) return res.status(403).json({ message: "You are not assigned to this farm" });
-    const farm = (await db.select({ id: farmsTable.id }).from(farmsTable).where(eq(farmsTable.id, req.params.farmId)).limit(1))[0];
+    const farm = (await db.select({ id: farmsTable.id }).from(farmsTable).where(eq(farmsTable.id, farmId)).limit(1))[0];
     if (!farm) return res.status(404).json({ message: "Farm not found" });
     const session = await currentSession(req);
     if (!session) return res.status(401).json({ message: "Active session required" });
-    await db.update(authSessions).set({ activeFarmId: req.params.farmId }).where(eq(authSessions.id, session.id));
-    await audit(req.authUser!.id, "active_farm_changed", "farm", req.params.farmId, undefined, req.params.farmId);
-    return res.json({ farmId: req.params.farmId });
+    await db.update(authSessions).set({ activeFarmId: farmId }).where(eq(authSessions.id, session.id));
+    await audit(req.authUser!.id, "active_farm_changed", "farm", farmId, undefined, farmId);
+    return res.json({ farmId });
   } catch (error) { return next(error); }
 });
 
@@ -263,7 +264,7 @@ router.post("/auth/farms", requireAuth, requirePermission("platform.farms.manage
 
 router.post("/auth/farms/:farmId/admin", requireAuth, requirePermission("platform.farms.manage"), async (req, res, next) => {
   try {
-    const farmId = req.params.farmId;
+    const farmId = String(req.params.farmId);
     const farm = (await db.select({ id: farmsTable.id, name: farmsTable.name }).from(farmsTable).where(eq(farmsTable.id, farmId)).limit(1))[0];
     if (!farm) return res.status(404).json({ message: "Farm not found" });
     const email = String(req.body?.email ?? "").trim().toLowerCase();
