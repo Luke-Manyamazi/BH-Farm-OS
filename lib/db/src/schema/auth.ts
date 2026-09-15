@@ -1,4 +1,15 @@
-import { pgTable, serial, text, boolean, timestamp, unique, integer, primaryKey } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from "drizzle-orm/pg-core";
+import { farmsTable } from "./farms";
 
 export const authRoles = pgTable("auth_roles", {
   id: serial("id").primaryKey(),
@@ -24,11 +35,27 @@ export const authUsers = pgTable("auth_users", {
   email: text("email").notNull(),
   displayName: text("display_name").notNull(),
   passwordHash: text("password_hash").notNull(),
+  // Kept for compatibility during the tenant migration. Farm-scoped role
+  // assignment is represented by authUserFarms.roleId.
   roleId: integer("role_id").notNull(),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 }, (table) => [unique("auth_users_email_unique").on(table.email)]);
+
+/**
+ * Farm membership is the tenant boundary for authentication. A user can be
+ * assigned to multiple farms and receives a role independently in each farm.
+ */
+export const authUserFarms = pgTable("auth_user_farms", {
+  userId: integer("user_id").notNull(),
+  farmId: uuid("farm_id").notNull().references(() => farmsTable.id),
+  roleId: integer("role_id").notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.farmId] }),
+]);
 
 export const authSections = pgTable("auth_sections", {
   id: serial("id").primaryKey(),
@@ -38,12 +65,14 @@ export const authSections = pgTable("auth_sections", {
 
 export const authUserSections = pgTable("auth_user_sections", {
   userId: integer("user_id").notNull(),
+  farmId: uuid("farm_id").notNull().references(() => farmsTable.id),
   sectionId: integer("section_id").notNull(),
-}, (table) => [primaryKey({ columns: [table.userId, table.sectionId] })]);
+}, (table) => [primaryKey({ columns: [table.userId, table.farmId, table.sectionId] })]);
 
 export const authSessions = pgTable("auth_sessions", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
+  activeFarmId: uuid("active_farm_id").references(() => farmsTable.id),
   tokenHash: text("token_hash").notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
@@ -52,6 +81,7 @@ export const authSessions = pgTable("auth_sessions", {
 export const authAuditLogs = pgTable("auth_audit_logs", {
   id: serial("id").primaryKey(),
   userId: integer("user_id"),
+  farmId: uuid("farm_id").references(() => farmsTable.id),
   action: text("action").notNull(),
   entityType: text("entity_type"),
   entityId: text("entity_id"),
