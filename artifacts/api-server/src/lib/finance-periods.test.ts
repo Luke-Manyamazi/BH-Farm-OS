@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { getFinancePeriodRange, summarizeFinanceTransactions } from "./finance-periods.ts";
+import { getFinancePeriodRange, summarizeFinanceTransactions } from "./finance-periods";
 
 test("month range respects the farm timezone", () => {
   const now = new Date("2026-03-31T23:30:00Z");
