@@ -5,6 +5,7 @@ import { tokenHash } from "../routes/auth";
 
 export type ActiveFarmContext = {
   farmId: string;
+  farmName: string;
   timezone: string;
 };
 
@@ -63,7 +64,7 @@ export async function resolveActiveFarm(req: Request): Promise<ActiveFarmContext
   }
 
   const farm = (await db
-    .select({ settings: farmsTable.settings, status: farmsTable.status })
+    .select({ name: farmsTable.name, settings: farmsTable.settings, status: farmsTable.status })
     .from(farmsTable)
     .where(and(eq(farmsTable.id, farmId), eq(farmsTable.status, "active")))
     .limit(1))[0];
@@ -72,5 +73,5 @@ export async function resolveActiveFarm(req: Request): Promise<ActiveFarmContext
 
   const settings = farm.settings ?? {};
   const timezone = typeof settings.timezone === "string" && settings.timezone ? settings.timezone : "UTC";
-  return { farmId, timezone };
+  return { farmId, farmName: farm.name, timezone };
 }
