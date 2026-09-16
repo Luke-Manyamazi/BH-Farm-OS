@@ -11,7 +11,7 @@ async function api(path: string, options?: RequestInit) {
   return d;
 }
 
-type FarmUser = { id: number; email: string; displayName: string; active: boolean; role: string; roleName: string; createdAt: string };
+type FarmUser = { id: number; email: string; displayName: string; active: boolean; role: string; roleName: string; sections: string[]; createdAt: string };
 
 export default function UsersPage() {
   const { user } = useAuth();
@@ -37,7 +37,7 @@ export default function UsersPage() {
     finally { setBusy(false); }
   }
 
-  function beginEdit(u: FarmUser) { setEditing(u.id); setEditRole(u.role); setEditSections([]); }
+  function beginEdit(u: FarmUser) { setEditing(u.id); setEditRole(u.role); setEditSections(u.sections ?? []); }
 
   async function saveEdit(u: FarmUser) {
     setBusy(true); setMessage('');
@@ -70,7 +70,7 @@ export default function UsersPage() {
       <div className="rounded-2xl border p-5"><h2 className="mb-4 font-semibold">Current users</h2><div className="space-y-3">
         {users.map(u => <div key={u.id} className="rounded-xl border p-3">
           <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="font-medium">{u.displayName}</div><div className="text-xs text-[hsl(var(--muted-foreground))]">{u.email}</div></div><div className="text-right text-xs"><div className="font-semibold">{u.roleName}</div><div className={u.active ? 'text-green-700' : 'text-red-700'}>{u.active ? 'Active' : 'Disabled'}</div></div></div>
-          {editing === u.id && <div className="mt-4 space-y-3 rounded-xl bg-[hsl(var(--muted)/.35)] p-3"><select className="w-full rounded-xl border p-2.5 text-sm" value={editRole} onChange={e => setEditRole(e.target.value)}>{roles.map(r => <option key={r.key} value={r.key}>{r.name}</option>)}</select><div><div className="mb-2 text-xs font-medium">Replace section assignments</div>{sectionPicker(editSections, setEditSections)}</div><div className="flex gap-2"><button disabled={busy} onClick={() => saveEdit(u)} className="rounded-xl bg-[hsl(var(--primary))] px-3 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))]">Save changes</button><button type="button" onClick={() => setEditing(null)} className="rounded-xl border px-3 py-2 text-xs">Cancel</button></div></div>}
+          {editing === u.id && <div className="mt-4 space-y-3 rounded-xl bg-[hsl(var(--muted)/.35)] p-3"><select className="w-full rounded-xl border p-2.5 text-sm" value={editRole} onChange={e => setEditRole(e.target.value)}>{roles.map(r => <option key={r.key} value={r.key}>{r.name}</option>)}</select><div><div className="mb-2 text-xs font-medium">Section assignments</div>{sectionPicker(editSections, setEditSections)}</div><div className="flex gap-2"><button disabled={busy} onClick={() => saveEdit(u)} className="rounded-xl bg-[hsl(var(--primary))] px-3 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))]">Save changes</button><button type="button" onClick={() => setEditing(null)} className="rounded-xl border px-3 py-2 text-xs">Cancel</button></div></div>}
           {editing !== u.id && <div className="mt-3 flex flex-wrap justify-end gap-2"><button disabled={busy || u.id === user.id} onClick={() => toggleActive(u)} className="rounded-xl border px-3 py-2 text-xs">{u.active ? 'Disable' : 'Enable'}</button><button disabled={busy} onClick={() => beginEdit(u)} className="rounded-xl border px-3 py-2 text-xs">Edit role / sections</button></div>}
         </div>)}
         {!users.length && <div className="rounded-xl border border-dashed p-6 text-center text-sm text-[hsl(var(--muted-foreground))]">No users assigned to this farm yet.</div>}
