@@ -9,12 +9,15 @@ import demoRouter from "./demo";
 import goatManagementRouter from "./goat-management";
 import poultryManagementRouter from "./poultry-management";
 import pigManagementRouter from "./pig-management";
-const router:IRouter=Router();
+import { requireActiveFarmContext } from "../lib/farm-context";
+
+const router: IRouter = Router();
 router.use(healthRouter);
 router.use(authRouter);
 router.use(authPermissionsRouter);
 router.use(requireAuth);
 router.use(requireFarmSectionAccess);
+router.use(requireActiveFarmContext);
 router.use(farmOverridesRouter);
 router.use(farmRouter);
 router.use(operationsRouter);
