@@ -21,13 +21,14 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=build /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
-# Drizzle Kit is required at startup to reconcile the production database schema.
+# The runtime needs pg for the deterministic production schema bootstrap.
 RUN pnpm install --frozen-lockfile
 
 EXPOSE 5000
 
-# Reconcile the exact production schema shipped with this image, then verify
-# that the API's auth_users query works against the same DATABASE_URL before
-# allowing the server to start. If verification fails, Render will show the
-# actual database/schema problem instead of starting a broken API.
-CMD ["sh", "-c", "cd /app/lib/db && pnpm exec drizzle-kit push --force --config ./drizzle.config.ts && node ./verify-production-schema.mjs && cd /app && node --enable-source-maps ./dist/index.mjs"]
+# Do NOT run `drizzle-kit push` here. Drizzle Kit can invoke rename resolvers
+# against an existing database, which requires an interactive TTY and makes
+# Render startup non-deterministic. The bootstrap creates the application's
+# public schema idempotently, then the verifier proves the auth schema exists,
+# and only then is the API allowed to start.
+CMD ["sh", "-c", "cd /app/lib/db && node ./ensure-production-schema.mjs && node ./verify-production-schema.mjs && cd /app && node --enable-source-maps ./dist/index.mjs"]
