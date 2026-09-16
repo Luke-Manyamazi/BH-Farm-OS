@@ -9,6 +9,7 @@ import { FarmHomePage } from '@/pages/farm-home';
 import RoleDashboardPage from '@/pages/role-dashboard';
 import LoginPage from '@/pages/login';
 import UsersPage from '@/pages/users';
+import FarmSettingsPage from '@/pages/farm-settings';
 import { FarmOperationsPage } from '@/pages/farm-operations';
 import GoatManagementPage from '@/pages/goat-management';
 import PoultryManagementPage from '@/pages/poultry-management';
@@ -28,7 +29,7 @@ function ProtectedRouter() {
   if (loading) return <div className="min-h-screen grid place-items-center">Loading secure farm access…</div>;
   if (!user) return <Redirect to="/login" />;
   return <FarmShell><RoutedErrorBoundary><Switch>
-    <Route path="/" component={RoleDashboardPage} /><Route path="/home" component={FarmHomePage} /><Route path="/users" component={UsersPage} />
+    <Route path="/" component={RoleDashboardPage} /><Route path="/home" component={FarmHomePage} /><Route path="/users" component={UsersPage} /><Route path="/farm-settings" component={FarmSettingsPage} />
     <Route path="/overview" component={DashboardPage} /><Route path="/today" component={TodayPage} /><Route path="/farm-map" component={FarmMapPage} />
     <Route path="/livestock" component={LivestockPage} /><Route path="/livestock/goats" component={GoatManagementPage} /><Route path="/livestock/poultry" component={PoultryManagementPage} /><Route path="/pigs" component={PigManagementPage} />
     <Route path="/fish"><Operations type="fish" /></Route><Route path="/fish/water-quality"><Operations type="fish_water_quality" /></Route><Route path="/fields"><Operations type="field" /></Route><Route path="/crops"><Operations type="crop" /></Route><Route path="/crop-activities"><Operations type="crop_activity" /></Route><Route path="/garden"><Operations type="home_garden" /></Route><Route path="/commercial-garden"><Operations type="garden_bed" /></Route><Route path="/greenhouse"><Operations type="greenhouse" /></Route><Route path="/orchard"><Operations type="orchard_tree" /></Route><Route path="/water"><Operations type="water_tank" /></Route><Route path="/water/usage"><Operations type="water_usage" /></Route><Route path="/irrigation"><Operations type="irrigation" /></Route><Route path="/health"><Operations type="health" /></Route><Route path="/crop-health"><Operations type="crop_health" /></Route>
