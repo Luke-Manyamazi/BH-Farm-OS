@@ -14,6 +14,20 @@ import { requireAuth, requirePermission } from "./auth";
 
 const router = Router();
 
+router.get("/auth/membership-sections", requireAuth, requirePermission("users.manage"), async (req, res, next) => {
+  try {
+    const farmId = req.authUser!.activeFarmId;
+    if (!farmId) return res.status(409).json({ message: "Select an active farm first" });
+    const rows = await db.select({ userId: authUserSections.userId, key: authSections.key })
+      .from(authUserSections)
+      .innerJoin(authSections, eq(authUserSections.sectionId, authSections.id))
+      .where(eq(authUserSections.farmId, farmId));
+    const grouped: Record<string, string[]> = {};
+    for (const row of rows) (grouped[String(row.userId)] ??= []).push(row.key);
+    return res.json(grouped);
+  } catch (error) { return next(error); }
+});
+
 router.post("/auth/memberships", requireAuth, requirePermission("users.manage"), async (req, res, next) => {
   try {
     const farmId = req.authUser!.activeFarmId;
