@@ -32,19 +32,38 @@ router.post("/auth/ensure-permissions", requireAuth, async (req, res, next) => {
   catch (error) { return next(error); }
 });
 
+const MANAGEMENT_ROLES = ["platform_admin", "owner_admin", "farm_manager", "farm_supervisor"];
+const SECTION_ROLES = ["section_head", "field_worker"];
+
 export function requireFarmSectionAccess(req: any, res: any, next: any) {
   const user = req.authUser;
   if (!user) return res.status(401).json({ message: "Authentication required" });
 
-  // Platform admins operate above the tenant boundary. Farm data still requires
-  // an active farm context, but platform administration does not.
-  if (user.role === "platform_admin") return next();
-  if (["owner_admin", "farm_manager", "farm_supervisor"].includes(user.role)) return next();
+  // Platform and farm management roles can operate across the active farm.
+  // Section roles are constrained to the sections explicitly assigned to them.
+  if (MANAGEMENT_ROLES.includes(user.role)) return next();
 
   const path = req.path;
-  const type = String(req.query?.type || "");
-  if (path.includes("/dashboard") || path.includes("/livestock") || path.includes("/zones")) return res.status(403).json({ message: "Management dashboard access denied" });
+  const type = String(req.query?.type || req.body?.recordType || "");
+  const method = String(req.method || "GET").toUpperCase();
+
   if (path.includes("/demo")) return res.status(403).json({ message: "Demo data access denied" });
+  if (path.includes("/users")) return user.permissions.includes("users.manage") ? next() : res.status(403).json({ message: "User administration access denied" });
+  if (path.includes("/settings")) return user.permissions.includes("settings.manage") ? next() : res.status(403).json({ message: "Settings access denied" });
+
+  if (path.includes("/finance") || path.includes("/expenses") || path.includes("/sales") || type === "sale" || type === "expense") {
+    return user.permissions.includes(method === "GET" ? "finance.view" : "finance.edit")
+      ? next()
+      : res.status(403).json({ message: "Finance access denied" });
+  }
+
+  // Generic farm mutations must still require the explicit operational permission.
+  if (method === "DELETE" && !user.permissions.includes("farm.delete")) {
+    return res.status(403).json({ message: "Delete permission required" });
+  }
+  if (["POST", "PUT", "PATCH"].includes(method) && !user.permissions.includes("farm.edit")) {
+    return res.status(403).json({ message: "Edit permission required" });
+  }
 
   let section: string | undefined;
   if (path.includes("goat")) section = "goats";
@@ -55,9 +74,14 @@ export function requireFarmSectionAccess(req: any, res: any, next: any) {
   else if (path.includes("water") || path.includes("irrigation") || ["water_tank", "water_usage", "irrigation"].includes(type)) section = "water";
   else if (path.includes("inventory")) section = "inventory";
 
-  if (path.includes("finance") || path.includes("expenses") || path.includes("sales") || type === "sale" || type === "expense") return user.permissions.includes("finance.view") ? next() : res.status(403).json({ message: "Finance access denied" });
-  if (path.includes("users")) return user.permissions.includes("users.manage") ? next() : res.status(403).json({ message: "User administration access denied" });
+  // Dashboard summaries are intentionally readable by section roles; detailed
+  // all-livestock management endpoints are not, because they cross sections.
+  if (path.includes("/dashboard") && method === "GET") return user.permissions.includes("dashboard.view") ? next() : res.status(403).json({ message: "Dashboard access denied" });
+  if (path.includes("/livestock") && !section) return res.status(403).json({ message: "Management dashboard access denied" });
+
   if (section && !user.sections.includes(section)) return res.status(403).json({ message: `Access denied for section: ${section}` });
+  if (SECTION_ROLES.includes(user.role) && !section) return res.status(403).json({ message: "A section assignment is required for this operation" });
+
   return next();
 }
 
