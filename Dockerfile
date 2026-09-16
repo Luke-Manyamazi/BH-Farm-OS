@@ -26,6 +26,8 @@ RUN pnpm install --frozen-lockfile
 
 EXPOSE 5000
 
-# Run Drizzle from the database package directory so its schema/config paths
-# are resolved against the exact files shipped in the runtime image.
-CMD ["sh", "-c", "cd /app/lib/db && pnpm exec drizzle-kit push --force --config ./drizzle.config.ts && cd /app && node --enable-source-maps ./dist/index.mjs"]
+# Reconcile the exact production schema shipped with this image, then verify
+# that the API's auth_users query works against the same DATABASE_URL before
+# allowing the server to start. If verification fails, Render will show the
+# actual database/schema problem instead of starting a broken API.
+CMD ["sh", "-c", "cd /app/lib/db && pnpm exec drizzle-kit push --force --config ./drizzle.config.ts && node ./verify-production-schema.mjs && cd /app && node --enable-source-maps ./dist/index.mjs"]
