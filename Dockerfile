@@ -21,7 +21,8 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=build /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
-RUN pnpm install --prod --frozen-lockfile
+# Drizzle Kit is required at startup to reconcile the production database schema.
+RUN pnpm install --frozen-lockfile
 
 EXPOSE 5000
 CMD ["sh", "-c", "pnpm --filter @workspace/db run push && node --enable-source-maps ./dist/index.mjs"]
