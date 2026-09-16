@@ -1,5 +1,5 @@
 import { and, desc, eq, gt } from "drizzle-orm";
-import type { Request } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { authSessions, authUserFarms, db, farmsTable } from "@workspace/db";
 import { tokenHash } from "../routes/auth";
 
@@ -8,6 +8,14 @@ export type ActiveFarmContext = {
   farmName: string;
   timezone: string;
 };
+
+declare global {
+  namespace Express {
+    interface Request {
+      farmContext?: ActiveFarmContext;
+    }
+  }
+}
 
 export async function resolveActiveFarm(req: Request): Promise<ActiveFarmContext> {
   const userId = req.authUser?.id;
@@ -43,7 +51,10 @@ export async function resolveActiveFarm(req: Request): Promise<ActiveFarmContext
         ),
       )
       .limit(1))[0];
-    if (!membership) farmId = null;
+
+    // Platform admins intentionally do not need a membership row for a farm,
+    // but the selected farm must still exist and be active.
+    if (!membership && req.authUser?.role !== "platform_admin") farmId = null;
   }
 
   if (!farmId) {
@@ -74,4 +85,15 @@ export async function resolveActiveFarm(req: Request): Promise<ActiveFarmContext
   const settings = farm.settings ?? {};
   const timezone = typeof settings.timezone === "string" && settings.timezone ? settings.timezone : "UTC";
   return { farmId, farmName: farm.name, timezone };
+}
+
+export async function requireActiveFarmContext(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.farmContext = await resolveActiveFarm(req);
+    return next();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Active farm context required";
+    const status = message === "Authentication required" ? 401 : 409;
+    return res.status(status).json({ message });
+  }
 }
