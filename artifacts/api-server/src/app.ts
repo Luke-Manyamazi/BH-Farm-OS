@@ -15,8 +15,29 @@ app.use(pinoHttp({
   },
 }));
 
-const allowedOrigins = (process.env.FRONTEND_URL ?? "http://localhost:5173").split(",").map((value) => value.trim()).filter(Boolean);
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const allowedOrigins = (process.env.FRONTEND_URL ?? "http://localhost:5173")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+
+// `cors` does not treat an array passed directly to `origin` as an allow-list.
+// Use the callback form so production cross-origin requests (including OPTIONS
+// preflight requests) receive the correct Access-Control-Allow-Origin header.
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow same-origin/server-to-server requests that have no Origin header.
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS origin not allowed: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 204,
+}));
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
