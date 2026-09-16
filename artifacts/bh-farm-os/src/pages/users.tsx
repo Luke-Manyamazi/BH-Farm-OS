@@ -23,8 +23,9 @@ export default function UsersPage() {
   const [editing, setEditing] = useState<number | null>(null); const [editRole, setEditRole] = useState('field_worker'); const [editSections, setEditSections] = useState<string[]>([]);
 
   const load = async () => {
-    const [u, r, s] = await Promise.all([api('/api/auth/users'), api('/api/auth/roles'), api('/api/auth/sections')]);
-    setUsers(u); setRoles(r); setSections(s);
+    const [u, r, s, assignments] = await Promise.all([api('/api/auth/users'), api('/api/auth/roles'), api('/api/auth/sections'), api('/api/auth/membership-sections')]);
+    setUsers((u as any[]).map((item) => ({ ...item, sections: assignments[String(item.id)] ?? [] })));
+    setRoles(r); setSections(s);
   };
 
   useEffect(() => { if (user?.permissions.includes('users.manage')) load().catch(e => setMessage(e.message)); }, [user]);
