@@ -26,8 +26,8 @@ export const authPermissions = pgTable("auth_permissions", {
 }, (table) => [unique("auth_permissions_key_unique").on(table.key)]);
 
 export const authRolePermissions = pgTable("auth_role_permissions", {
-  roleId: integer("role_id").notNull(),
-  permissionId: integer("permission_id").notNull(),
+  roleId: integer("role_id").notNull().references(() => authRoles.id, { onDelete: "cascade" }),
+  permissionId: integer("permission_id").notNull().references(() => authPermissions.id, { onDelete: "cascade" }),
 }, (table) => [primaryKey({ columns: [table.roleId, table.permissionId] })]);
 
 export const authUsers = pgTable("auth_users", {
@@ -35,22 +35,17 @@ export const authUsers = pgTable("auth_users", {
   email: text("email").notNull(),
   displayName: text("display_name").notNull(),
   passwordHash: text("password_hash").notNull(),
-  // Kept for compatibility during the tenant migration. Farm-scoped role
-  // assignment is represented by authUserFarms.roleId.
-  roleId: integer("role_id").notNull(),
+  // Compatibility field retained while farm-scoped roles live in auth_user_farms.
+  roleId: integer("role_id").notNull().references(() => authRoles.id),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 }, (table) => [unique("auth_users_email_unique").on(table.email)]);
 
-/**
- * Farm membership is the tenant boundary for authentication. A user can be
- * assigned to multiple farms and receives a role independently in each farm.
- */
 export const authUserFarms = pgTable("auth_user_farms", {
-  userId: integer("user_id").notNull(),
-  farmId: uuid("farm_id").notNull().references(() => farmsTable.id),
-  roleId: integer("role_id").notNull(),
+  userId: integer("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+  farmId: uuid("farm_id").notNull().references(() => farmsTable.id, { onDelete: "cascade" }),
+  roleId: integer("role_id").notNull().references(() => authRoles.id),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 }, (table) => [
@@ -64,15 +59,15 @@ export const authSections = pgTable("auth_sections", {
 }, (table) => [unique("auth_sections_key_unique").on(table.key)]);
 
 export const authUserSections = pgTable("auth_user_sections", {
-  userId: integer("user_id").notNull(),
-  farmId: uuid("farm_id").notNull().references(() => farmsTable.id),
-  sectionId: integer("section_id").notNull(),
+  userId: integer("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+  farmId: uuid("farm_id").notNull().references(() => farmsTable.id, { onDelete: "cascade" }),
+  sectionId: integer("section_id").notNull().references(() => authSections.id, { onDelete: "cascade" }),
 }, (table) => [primaryKey({ columns: [table.userId, table.farmId, table.sectionId] })]);
 
 export const authSessions = pgTable("auth_sessions", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  activeFarmId: uuid("active_farm_id").references(() => farmsTable.id),
+  userId: integer("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+  activeFarmId: uuid("active_farm_id").references(() => farmsTable.id, { onDelete: "set null" }),
   tokenHash: text("token_hash").notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
@@ -80,8 +75,8 @@ export const authSessions = pgTable("auth_sessions", {
 
 export const authAuditLogs = pgTable("auth_audit_logs", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id"),
-  farmId: uuid("farm_id").references(() => farmsTable.id),
+  userId: integer("user_id").references(() => authUsers.id, { onDelete: "set null" }),
+  farmId: uuid("farm_id").references(() => farmsTable.id, { onDelete: "set null" }),
   action: text("action").notNull(),
   entityType: text("entity_type"),
   entityId: text("entity_id"),
