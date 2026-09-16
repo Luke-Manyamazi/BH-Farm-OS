@@ -242,8 +242,9 @@ router.post("/auth/farms/:farmId/select", requireAuth, async (req, res, next) =>
     const isPlatform = req.authUser!.role === "platform_admin";
     const membership = isPlatform ? { farmId } : (await db.select().from(authUserFarms).where(and(eq(authUserFarms.userId, req.authUser!.id), eq(authUserFarms.farmId, farmId), eq(authUserFarms.active, true))).limit(1))[0];
     if (!membership) return res.status(403).json({ message: "You are not assigned to this farm" });
-    const farm = (await db.select({ id: farmsTable.id }).from(farmsTable).where(eq(farmsTable.id, farmId)).limit(1))[0];
+    const farm = (await db.select({ id: farmsTable.id, status: farmsTable.status }).from(farmsTable).where(eq(farmsTable.id, farmId)).limit(1))[0];
     if (!farm) return res.status(404).json({ message: "Farm not found" });
+    if (farm.status !== "active") return res.status(409).json({ message: "This farm is not active" });
     const session = await currentSession(req);
     if (!session) return res.status(401).json({ message: "Active session required" });
     await db.update(authSessions).set({ activeFarmId: farmId }).where(eq(authSessions.id, session.id));
@@ -265,8 +266,9 @@ router.post("/auth/farms", requireAuth, requirePermission("platform.farms.manage
 router.post("/auth/farms/:farmId/admin", requireAuth, requirePermission("platform.farms.manage"), async (req, res, next) => {
   try {
     const farmId = String(req.params.farmId);
-    const farm = (await db.select({ id: farmsTable.id, name: farmsTable.name }).from(farmsTable).where(eq(farmsTable.id, farmId)).limit(1))[0];
+    const farm = (await db.select({ id: farmsTable.id, name: farmsTable.name, status: farmsTable.status }).from(farmsTable).where(eq(farmsTable.id, farmId)).limit(1))[0];
     if (!farm) return res.status(404).json({ message: "Farm not found" });
+    if (farm.status !== "active") return res.status(409).json({ message: "Farm must be active before an administrator can be provisioned" });
     const email = String(req.body?.email ?? "").trim().toLowerCase();
     const password = String(req.body?.password ?? "");
     const displayName = String(req.body?.displayName ?? "").trim();
@@ -290,7 +292,7 @@ router.get("/auth/users", requireAuth, requirePermission("users.manage"), async 
 });
 
 router.get("/auth/roles", requireAuth, requirePermission("users.manage"), async (_req, res, next) => {
-  try { return res.json(await db.select().from(authRoles)); } catch (error) { return next(error); }
+  try { return res.json(await db.select().from(authRoles).where(eq(authRoles.isSystem, true))); } catch (error) { return next(error); }
 });
 
 router.get("/auth/sections", requireAuth, async (_req, res, next) => {
@@ -315,10 +317,60 @@ router.post("/auth/users", requireAuth, requirePermission("users.manage"), async
       const section = (await db.select().from(authSections).where(eq(authSections.key, key)).limit(1))[0];
       if (section) await db.insert(authUserSections).values({ userId: user.id, farmId, sectionId: section.id }).onConflictDoNothing();
     }
-    await audit(req.authUser!.id, "user_created", "user", String(user.id), undefined, farmId);
+    await audit(req.authUser!.id, "user_created", "user", String(user.id), JSON.stringify({ role: role.key, sections: requestedSections }), farmId);
     return res.status(201).json({ id: user.id, email: user.email, displayName: user.displayName, role: role.key, sections: requestedSections, farmId });
   } catch (error: any) {
     if (error?.code === "23505") return res.status(409).json({ message: "A user with that email already exists" });
+    return next(error);
+  }
+});
+
+router.patch("/auth/users/:userId", requireAuth, requirePermission("users.manage"), async (req, res, next) => {
+  try {
+    const actor = req.authUser!;
+    const farmId = actor.activeFarmId;
+    if (!farmId) return res.status(409).json({ message: "Select an active farm first" });
+    const userId = Number(req.params.userId);
+    if (!Number.isInteger(userId) || userId <= 0) return res.status(400).json({ message: "Invalid user id" });
+    if (userId === actor.id && req.body?.active === false) return res.status(400).json({ message: "You cannot deactivate your own account" });
+
+    const membership = (await db.select({ user: authUsers, membership: authUserFarms, role: authRoles }).from(authUserFarms).innerJoin(authUsers, eq(authUserFarms.userId, authUsers.id)).innerJoin(authRoles, eq(authUserFarms.roleId, authRoles.id)).where(and(eq(authUserFarms.userId, userId), eq(authUserFarms.farmId, farmId))).limit(1))[0];
+    if (!membership) return res.status(404).json({ message: "User is not assigned to the active farm" });
+
+    const roleKey = req.body?.role === undefined ? membership.role.key : String(req.body.role);
+    const role = await roleByKey(roleKey);
+    if (!role || role.key === "platform_admin") return res.status(400).json({ message: "Unknown or unavailable farm role" });
+
+    const updates: { displayName?: string; active?: boolean; roleId?: number; updatedAt?: string } = {};
+    if (req.body?.displayName !== undefined) {
+      const displayName = String(req.body.displayName).trim();
+      if (!displayName) return res.status(400).json({ message: "Display name cannot be empty" });
+      updates.displayName = displayName;
+    }
+    if (req.body?.active !== undefined) {
+      if (typeof req.body.active !== "boolean") return res.status(400).json({ message: "active must be a boolean" });
+      updates.active = req.body.active;
+    }
+    updates.roleId = role.id;
+    updates.updatedAt = new Date().toISOString();
+
+    await db.transaction(async (tx) => {
+      await tx.update(authUsers).set(updates).where(eq(authUsers.id, userId));
+      await tx.update(authUserFarms).set({ roleId: role.id, active: req.body?.active === false ? false : membership.membership.active }).where(and(eq(authUserFarms.userId, userId), eq(authUserFarms.farmId, farmId)));
+      if (Array.isArray(req.body?.sections)) {
+        await tx.delete(authUserSections).where(and(eq(authUserSections.userId, userId), eq(authUserSections.farmId, farmId)));
+        for (const key of req.body.sections) {
+          const section = (await tx.select().from(authSections).where(eq(authSections.key, String(key))).limit(1))[0];
+          if (section) await tx.insert(authUserSections).values({ userId, farmId, sectionId: section.id }).onConflictDoNothing();
+        }
+      }
+      if (req.body?.active === false) await tx.delete(authSessions).where(eq(authSessions.userId, userId));
+    });
+
+    await audit(actor.id, "user_updated", "user", String(userId), JSON.stringify({ role: role.key, active: req.body?.active, sections: req.body?.sections }), farmId);
+    return res.json({ ok: true, userId, farmId, role: role.key });
+  } catch (error: any) {
+    if (error?.code === "23505") return res.status(409).json({ message: "User update conflicts with an existing account" });
     return next(error);
   }
 });
