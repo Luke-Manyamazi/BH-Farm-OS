@@ -25,4 +25,7 @@ COPY --from=build /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN pnpm install --frozen-lockfile
 
 EXPOSE 5000
-CMD ["sh", "-c", "pnpm --filter @workspace/db run push && node --enable-source-maps ./dist/index.mjs"]
+
+# Use the non-interactive force variant, matching CI, so Render reconciles
+# every table/column in the production database before starting the API.
+CMD ["sh", "-c", "pnpm --filter @workspace/db run push-force && node --enable-source-maps ./dist/index.mjs"]
