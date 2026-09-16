@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Router, type IRouter } from "express";
 import { db, authAuditLogs, authUserFarms, farmsTable } from "@workspace/db";
 import { requirePermission } from "./auth";
@@ -21,7 +21,7 @@ router.get("/farm-management", async (req, res, next) => {
     const farm = await getFarm(id);
     if (!farm) return res.status(404).json({ message: "Farm not found" });
     if (req.authUser?.role !== "platform_admin") {
-      const membership = (await db.select({ farmId: authUserFarms.farmId }).from(authUserFarms).where(eq(authUserFarms.farmId, id)).limit(1))[0];
+      const membership = (await db.select({ farmId: authUserFarms.farmId }).from(authUserFarms).where(and(eq(authUserFarms.userId, req.authUser!.id), eq(authUserFarms.farmId, id), eq(authUserFarms.active, true))).limit(1))[0];
       if (!membership) return res.status(403).json({ message: "Farm access denied" });
     }
     return res.json(farm);
