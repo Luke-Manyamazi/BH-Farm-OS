@@ -47,7 +47,6 @@ export function requireFarmSectionAccess(req: any, res: any, next: any) {
   const type = String(req.query?.type || req.body?.recordType || "");
   const method = String(req.method || "GET").toUpperCase();
 
-  // Platform lifecycle/admin endpoints have their own explicit permission checks.
   if (path.startsWith("/farm-management/") && user.permissions.includes("platform.farms.manage")) return next();
   if (path.startsWith("/farm-management") && user.permissions.includes("settings.manage")) return next();
   if (path.includes("/platform/farms")) {
@@ -57,7 +56,6 @@ export function requireFarmSectionAccess(req: any, res: any, next: any) {
   }
 
   if (path.includes("/demo")) {
-    // Demo data is deliberately unavailable to field/section users.
     if (SECTION_ROLES.includes(user.role)) return res.status(403).json({ message: "Demo data access denied" });
     return next();
   }
@@ -84,6 +82,27 @@ export function requireFarmSectionAccess(req: any, res: any, next: any) {
     return user.permissions.includes("dashboard.view") ? next() : res.status(403).json({ message: "Dashboard access denied" });
   }
 
+  // These endpoints aggregate or expose records from multiple production sections.
+  // Section-scoped users must stay inside their assigned section routes instead of
+  // using a generic endpoint to enumerate another section's data.
+  if (SECTION_ROLES.includes(user.role) && (
+    path === "/operations" ||
+    path === "/operations/summary" ||
+    path === "/operations/calendar" ||
+    path === "/zones" ||
+    path === "/search"
+  )) {
+    return res.status(403).json({ message: "Cross-section farm access denied" });
+  }
+
+  // Farm setup creates the shared operating structure and is therefore an admin
+  // action rather than an ordinary operational edit.
+  if (path === "/operations/bootstrap") {
+    return user.permissions.includes("settings.manage")
+      ? next()
+      : res.status(403).json({ message: "Farm setup permission required" });
+  }
+
   if (path.includes("/livestock") && method === "GET" && !user.permissions.includes("farm.view")) {
     return res.status(403).json({ message: "Farm view permission required" });
   }
@@ -101,7 +120,6 @@ export function requireFarmSectionAccess(req: any, res: any, next: any) {
     return res.status(403).json({ message: `Access denied for section: ${section}` });
   }
 
-  // Every mutation of operational farm data requires farm.edit. Delete is stronger.
   if (method === "DELETE" && !user.permissions.includes("farm.delete")) {
     return res.status(403).json({ message: "Delete permission required" });
   }
@@ -109,8 +127,6 @@ export function requireFarmSectionAccess(req: any, res: any, next: any) {
     return res.status(403).json({ message: "Edit permission required" });
   }
 
-  // Section roles cannot access unclassified operational endpoints. Management roles
-  // may access cross-section farm data according to their explicit permissions.
   if (SECTION_ROLES.includes(user.role) && !section && !user.permissions.includes("farm.view")) {
     return res.status(403).json({ message: "Farm view permission required" });
   }
