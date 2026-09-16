@@ -18,6 +18,7 @@ export default function PlatformFarmsPage() {
   const [email, setEmail] = useState("");
   const [adminName, setAdminName] = useState("");
   const [password, setPassword] = useState("");
+  const [timezone, setTimezone] = useState("Africa/Harare");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [rows, setRows] = useState<any[]>([]);
@@ -33,7 +34,7 @@ export default function PlatformFarmsPage() {
     try {
       await api("/api/auth/farms/onboard", {
         method: "POST",
-        body: JSON.stringify({ name, email, displayName: adminName, password }),
+        body: JSON.stringify({ name, email, displayName: adminName, password, timezone }),
       });
       setMessage("Farm onboarded successfully with its owner administrator.");
       setName(""); setEmail(""); setAdminName(""); setPassword("");
@@ -70,6 +71,7 @@ export default function PlatformFarmsPage() {
           <input className="h-10 w-full rounded-xl border bg-[hsl(var(--background))] px-3 text-sm" placeholder="Owner name" value={adminName} onChange={e => setAdminName(e.target.value)} required />
           <input className="h-10 w-full rounded-xl border bg-[hsl(var(--background))] px-3 text-sm" type="email" placeholder="Owner email" value={email} onChange={e => setEmail(e.target.value)} required />
           <input className="h-10 w-full rounded-xl border bg-[hsl(var(--background))] px-3 text-sm" type="password" minLength={12} placeholder="Temporary password (12+ characters)" value={password} onChange={e => setPassword(e.target.value)} required />
+          <input className="h-10 w-full rounded-xl border bg-[hsl(var(--background))] px-3 text-sm" placeholder="Timezone (e.g. Africa/Harare)" value={timezone} onChange={e => setTimezone(e.target.value)} required />
           {message && <div className="rounded-xl border p-3 text-sm">{message}</div>}
           <Button type="submit" disabled={busy}>{busy ? "Onboarding…" : "Create farm & owner"}</Button>
         </form>
@@ -81,6 +83,7 @@ export default function PlatformFarmsPage() {
             <div><div className="font-medium">{f.name}</div><div className="font-mono text-[10px] text-[hsl(var(--muted-foreground))]">{f.id}</div></div>
             <div className="flex items-center gap-2"><Badge tone={f.status === "active" ? "green" : f.status === "suspended" ? "red" : "gold"}>{f.status}</Badge>{f.status !== "active" && <Button size="sm" disabled={busy} onClick={() => setLifecycle(f.id, "active")}>Activate</Button>}{f.status === "active" && <Button size="sm" variant="danger" disabled={busy} onClick={() => setLifecycle(f.id, "suspended")}>Suspend</Button>}</div>
           </div>)}
+          {!rows.length && <div className="rounded-xl border border-dashed p-6 text-center text-sm text-[hsl(var(--muted-foreground))]">No farm tenants found.</div>}
         </div>
       </Panel>
     </div>
