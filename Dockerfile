@@ -26,6 +26,6 @@ RUN pnpm install --frozen-lockfile
 
 EXPOSE 5000
 
-# Use the non-interactive force variant, matching CI, so Render reconciles
-# every table/column in the production database before starting the API.
-CMD ["sh", "-c", "pnpm --filter @workspace/db run push-force && node --enable-source-maps ./dist/index.mjs"]
+# Run Drizzle from the database package directory so its schema/config paths
+# are resolved against the exact files shipped in the runtime image.
+CMD ["sh", "-c", "cd /app/lib/db && pnpm exec drizzle-kit push --force --config ./drizzle.config.ts && cd /app && node --enable-source-maps ./dist/index.mjs"]
